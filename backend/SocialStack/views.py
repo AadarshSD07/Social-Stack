@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 def fetch_user_details(request):
-    import pdb; pdb.set_trace()
     if request.user.is_authenticated:
         return {
             "fullName": request.user.first_name + " " + request.user.last_name,
@@ -26,6 +25,5 @@ class ReactAppView(TemplateView):
 
 class HeaderDetails(APIView):
     def get(self, request, format=None):
-        import pdb; pdb.set_trace()
         response = fetch_user_details(request)
         return Response(response, status=status.HTTP_200_OK)

@@ -23,6 +23,7 @@ export default function CreatePosts() {
       );
       if (response.status === 200){
         setDesc("");
+        window.location.href = "/";
       }
 
     } catch (err) {
