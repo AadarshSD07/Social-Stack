@@ -10,6 +10,7 @@ class Config:
     unauthorized = status.HTTP_401_UNAUTHORIZED
     accepted = status.HTTP_202_ACCEPTED
     forbidden = status.HTTP_403_FORBIDDEN
+    bad_request = status.HTTP_400_BAD_REQUEST
 
     database_url = os.getenv('DATABASE_URL')
     api_key = os.getenv('API_KEY')

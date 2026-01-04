@@ -41,7 +41,7 @@ export default function Dashboard() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`$${backendUrl}/social/user-posts/`, config);
+        const response = await axios.get(`${backendUrl}/social/user-posts/`, config);
         setGetPostsData(response.data);
         setError(null);
       } catch (err) {
