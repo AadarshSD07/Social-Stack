@@ -12,24 +12,31 @@ export default function Profile() {
         e.preventDefault();
         const config = LocalStorageVariables("config");
         try {
-        const response = await axios.post(
-            `${backendUrl}/accounts/user-details/`,
-            {
-                username: username,
-                password: password,
-                npassword: npassword
-            },
-            config
-        );
-        if (response.status === 200){
-            setUsername("");
-            setPassword("");
-            window.location.href = "/";
-        }
+            const response = await axios.post(
+                `${backendUrl}/accounts/change-user-password/`,
+                {
+                    username: username,
+                    old_password: password,
+                    new_password: npassword,
+                    confirm_password: npassword
+                },
+                config
+            );
+            if (response.status === 200){
+                setUsername("");
+                setPassword("");
+                window.location.href = "/";
+            }
 
         } catch (err) {
-        alert(err);
-        console.log("Error with request");
+            if (typeof(err.response.data) === "object") {
+                let objKey = Object.keys(err.response.data)[0]
+                let objVal = err.response.data[objKey][0].toLowerCase()
+                alert("Error with the request, " + objKey.replace("_"," ") + " => " + objVal)
+            } else {
+                alert(err);
+                console.log("Error with request");
+            }
         }
     }
 
