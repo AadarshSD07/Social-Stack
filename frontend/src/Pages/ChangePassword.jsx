@@ -3,9 +3,10 @@ import LocalStorageVariables from "../Methods/LocalStorageVariables";
 import axios from "axios";
 
 export default function ChangePassword() {
-    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [npassword, setNPassword] = useState("");
+    const [status, setStatus] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const Submit = async (e) => {
@@ -15,7 +16,6 @@ export default function ChangePassword() {
             const response = await axios.post(
                 `${backendUrl}/accounts/change-user-password/`,
                 {
-                    username: username,
                     old_password: password,
                     new_password: npassword,
                     confirm_password: npassword
@@ -23,16 +23,18 @@ export default function ChangePassword() {
                 config
             );
             if (response.status === 200){
-                setUsername("");
                 setPassword("");
-                window.location.href = "/";
+                setStatus("success");
+                setStatusMessage("Password changed successfully!");
             }
 
         } catch (err) {
             if (typeof(err.response.data) === "object") {
                 let objKey = Object.keys(err.response.data)[0]
                 let objVal = err.response.data[objKey][0].toLowerCase()
-                alert("Error with the request, " + objKey.replace("_"," ") + " => " + objVal)
+                setStatus("danger");
+                console.log("Error with the request, " + objKey.replace("_"," ") + " => " + objVal);
+                setStatusMessage(objVal);
             } else {
                 alert(err);
                 console.log("Error with request");
@@ -44,13 +46,11 @@ export default function ChangePassword() {
         <>
         <div className="w-25">
             <form onSubmit={Submit}>
-            <div className="mb-3">
-                <label htmlFor="username" className="form-label">
-                Username
-                </label>
-                <input id="username" value={username} onChange={(e) => setUsername(e.target.value)} className="form-control shadow-sm" 
-                placeholder="username" />
-            </div>
+            {statusMessage && (
+                <div className={`alert alert-${status}`} role="alert">
+                    {statusMessage}
+                </div>
+            )}
             <div className="mb-3">
                 <label htmlFor="password" className="form-label">
                 Old Password

@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 def fetch_user_details(request):
     if request.user.is_authenticated:
         return {
-            "fullName": request.user.first_name + " " + request.user.last_name,
+            "fullName": (request.user.first_name + " " + request.user.last_name)[:10],
             "username": request.user.username,
             "isUserAdmin": request.user.get_user_role() == "admin",
             "userImage": request.user.get_user_profile_image().url
