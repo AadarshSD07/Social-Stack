@@ -10,6 +10,7 @@ class UserPost(models.Model):
     post_desc = models.TextField()
     imageurl = models.ImageField(upload_to='user_posts', blank=True, null=True)
     likes = models.ManyToManyField(acc_models.User, through='PostLike', related_name='liked_posts', blank=True)
+    editedPost = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

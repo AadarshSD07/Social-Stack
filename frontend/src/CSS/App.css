@@ -115,6 +115,31 @@
     object-fit: cover;
 }
 
+.form-image {
+    height: 20rem;
+    width: 100%;
+    object-fit: cover;
+}
+
+.postImage {
+  max-height: 20rem;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.postImageContainer {
+  width: 100%;
+  max-height: 20rem;
+  height: 20rem;
+  background-color: #f0f0f0; /* Light gray background - change as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
 .username {
     color: #8b98a5;
     font-size: 0.95rem;
@@ -163,6 +188,10 @@
   border-color: transparent;
 }
 
+.svgButton-pencil {
+  margin-left: 2.5em;
+}
+
 .field-width {
   width: 75%;
 }
@@ -182,6 +211,29 @@ height: calc(100% - 73px);
   display: none;
 }
 
+.post-text-input {
+  width: 100%;
+  color: black;
+  min-height: 100px;
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #ccc;
+  padding: 8px;
+  resize: vertical;
+  background-color: #f0f0f0aa;
+}
+
+.edit-buttons {
+  margin-top: 8px;
+  gap: 8px;
+}
+
+.blockquote-footer {
+  margin-top: 1rem;
+  margin-bottom: 0rem;
+  font-size: .875em;
+  color: #6c757d;
+}
 
 @media (max-width: 450px) {
 .h-custom {

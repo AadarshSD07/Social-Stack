@@ -19,7 +19,7 @@ class FetchSocialPosts(APIView):
     def get(self, request, format=None):
         total_posts = list(
             self.queryset.annotate(
-                updated_at_str=Cast('updated_at', CharField()),
+                created_at_str=Cast('created_at', CharField()),
                 # Coalesce ensures that if Count is None, it returns 0
                 likes_count=Coalesce(Count('likes'), Value(0))
             ).values(
@@ -30,9 +30,10 @@ class FetchSocialPosts(APIView):
                 "user__first_name",
                 "user__last_name",
                 "post_desc",
-                "updated_at_str",
+                "editedPost",
+                "created_at_str",
                 "likes_count"
-            )
+            ).order_by("-created_at")
         )
         # liked_posts = list(PostLike.objects.filter(user=request.user).values_list("post__id", flat=True))
         liked_posts = list(
@@ -45,7 +46,7 @@ class FetchSocialPosts(APIView):
         )
         raw_comments = list(
             UserComment.objects.annotate(
-                updated_at_str=Cast('updated_at', CharField()),
+                created_at_str=Cast('created_at', CharField()),
             ).filter(
                 post__id__in=[pst["id"] for pst in total_posts]
             ).values(
@@ -55,7 +56,7 @@ class FetchSocialPosts(APIView):
                 "user__userprofile__image",
                 "post__id",
                 "comment",
-                "updated_at_str"
+                "created_at_str"
             ).order_by("-created_at")
         )
         comments_dict = defaultdict(list)
@@ -65,7 +66,7 @@ class FetchSocialPosts(APIView):
                 "user": comm["user__first_name"] + " " + comm["user__last_name"],
                 "userImage":f'/media/{comm["user__userprofile__image"]}',
                 "comment": comm["comment"],
-                "timestamp": comm["updated_at_str"]
+                "timestamp": comm["created_at_str"]
             })
         is_user_admin = request.user.get_user_role() == "admin"
         posts = json.dumps(total_posts)
@@ -99,7 +100,7 @@ class FetchUserPosts(APIView):
         total_posts = list(
             self.queryset.filter(user = request.user)
             .annotate(
-                updated_at_str=Cast('updated_at', CharField()),
+                created_at_str=Cast('created_at', CharField()),
                 # Coalesce ensures that if Count is None, it returns 0
                 likes_count=Coalesce(Count('likes'), Value(0))
             ).values(
@@ -110,9 +111,11 @@ class FetchUserPosts(APIView):
                 "user__first_name",
                 "user__last_name",
                 "post_desc",
-                "updated_at_str",
+                "editedPost",
+                "created_at_str",
                 "likes_count"
-            ))
+            ).order_by("-created_at")
+        )
         # liked_posts = list(PostLike.objects.filter(user=request.user).values_list("post__id", flat=True))
         liked_posts = list(
             PostLike.objects.filter(
@@ -124,7 +127,7 @@ class FetchUserPosts(APIView):
         )
         raw_comments = list(
             UserComment.objects.annotate(
-                updated_at_str=Cast('updated_at', CharField()),
+                created_at_str=Cast('created_at', CharField()),
             ).filter(
                 post__id__in=[pst["id"] for pst in total_posts]
             ).values(
@@ -134,7 +137,7 @@ class FetchUserPosts(APIView):
                 "user__userprofile__image",
                 "post__id",
                 "comment",
-                "updated_at_str"
+                "created_at_str"
             ).order_by("-created_at")
         )
         comments_dict = defaultdict(list)
@@ -144,7 +147,7 @@ class FetchUserPosts(APIView):
                 "user": comm["user__first_name"] + " " + comm["user__last_name"],
                 "userImage":f'/media/{comm["user__userprofile__image"]}',
                 "comment": comm["comment"],
-                "timestamp": comm["updated_at_str"]
+                "timestamp": comm["created_at_str"]
             })
         posts = json.dumps(total_posts)
         response = {
@@ -156,9 +159,28 @@ class FetchUserPosts(APIView):
     
     def post(self, request):
         post_data = request.data
-        UserPost.objects.create(post_desc = post_data["desc"], user = request.user)
+        desc = post_data.get("desc")
+        image_url = post_data.get("imageUrl")
+
+        # Use create() once with all required data
+        UserPost.objects.create(
+            user=request.user,
+            post_desc=desc,
+            imageurl=image_url # Django handles None/Null correctly if image_url is missing
+        )
         return Response("Success", status=Config.success)
-    
+
+    def patch(self, request):
+        post_data = request.data
+        post = self.queryset.filter(id = post_data["postId"], user=request.user)
+        if post.exists():
+            userPost = post.first()
+            userPost.post_desc = post_data["editedComment"]
+            userPost.editedPost = True
+            userPost.save()
+            return Response({"message": "Post updated successfully!"},status=Config.success)
+        return Response({"message":"No post found for requested user!"}, status=Config.no_content)
+
     def delete(self, request):
         deleteId = request.data["postId"]
         post = self.queryset.filter(id = deleteId, user=request.user.id)

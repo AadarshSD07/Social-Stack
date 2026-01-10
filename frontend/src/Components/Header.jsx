@@ -10,43 +10,121 @@ import Profile from '../Pages/Profile';
 import Register from '../Pages/Register';
 import ViewPosts from '../Pages/ViewPosts';
 
-const NavbarWithRouter = () => {
+const NavbarWithRouter = (props) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const fetchLocation = useLocation();
-    if (!["/register","/login","/"].includes(fetchLocation.pathname)) {
-        localStorage.setItem("redirectPath", fetchLocation.pathname);
-        window.location.href = "/";
-    }
-    
-    return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
-            <div className="container-fluid">
-                <a className="navbar-brand" href="/">
-                    <img src={`${backendUrl}/media/logo/SSLNewShortSVG.png`}
-                        className="img-fluid sslogo" alt="Sample image" />
-                </a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className='collapse navbar-collapse' id='navbarSupportedContent'>
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <span></span>
-                    </ul>
-                    <div className='d-flex'>
+
+    if (!props.isAuthenticated) {
+        if (!["/register","/login","/"].includes(fetchLocation.pathname)) {
+            localStorage.setItem("redirectPath", fetchLocation.pathname);
+            return <Navigate to="/" state={{ from: fetchLocation.pathname }} replace />;
+        }
+
+        return (
+            <>
+            <nav className="navbar navbar-expand-lg bg-body-tertiary">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="/">
+                        <img src={`${backendUrl}/media/logo/SSLNewShortSVG.png`}
+                            className="img-fluid sslogo" alt="Sample image" />
+                    </a>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className='collapse navbar-collapse' id='navbarSupportedContent'>
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item dropdown">
-                                {fetchLocation.pathname === "/register" ? (
-                                    <Link className="navbar-brand" to="/login">Login</Link>
-                                ) : (
-                                    <Link className="navbar-brand" to="/register">Register</Link>
-                                )}                                        
-                            </li>
+                            <span></span>
+                        </ul>
+                        <div className='d-flex'>
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li className="nav-item dropdown">
+                                    {fetchLocation.pathname === "/register" ? (
+                                        <Link className="navbar-brand" to="/login">Login</Link>
+                                    ) : (
+                                        <Link className="navbar-brand" to="/register">Register</Link>
+                                    )}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div className='page-content'>
+                <Routes>
+                    <Route path="/" element={<Navigate to="/login" replace />} />
+                    <Route path="/login/*" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                </Routes>
+            </div>
+            </>
+        );
+    } else {
+        if (["/register","/login"].includes(fetchLocation.pathname)) {
+            localStorage.setItem("redirectPath", fetchLocation.pathname);
+            return <Navigate to="/" state={{ from: fetchLocation.pathname }} replace />;
+        }
+
+        return (
+            <>
+            <nav className="navbar navbar-expand-lg bg-body-tertiary">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="/">
+                        <img src={`${backendUrl}/media/logo/SSLNewShortSVG.png`}
+                            className="img-fluid sslogo" alt="Sample image" />
+                    </a>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                            <span></span>
+                        </ul>
+                        { props.getHeaderDetails ?
+                            <nav className="navbar-nav me-auto mb-2 mb-lg-0">
+                                <Link className="nav-link" to="/">👤Dashboard</Link>
+                                <Link className="nav-link" to="/view-posts">📝View Posts</Link>
+                                <Link className="nav-link" to="/create-posts">➕Create Post</Link>
+                            </nav>
+                            : ""
+                        }
+                        <div className='d-flex'>
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src={`${backendUrl}${props.getHeaderDetails.userImage}`} alt="User" className="avatar me-3"/>
+                                        {props.getHeaderDetails.fullName}
+                                    </a>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <Link className="dropdown-item" to="/profile">👤Profile</Link>
+                                        </li>
+                                        <li>
+                                            <Link className="dropdown-item" to="/change-password">🗝️Change Password</Link>
+                                        </li>
+                                        <li><hr className="dropdown-divider"/></li>
+                                        <li><a className="dropdown-item" href="#" onClick={() => props.logout()}>🚪{"Logout"}</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <ul className="mb-2 mb-lg-0">
+                            <span></span>
                         </ul>
                     </div>
                 </div>
+            </nav>
+            <div className='page-content mt-4 pb-5'>
+                <Routes>
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/view-posts" element={<ViewPosts />} />
+                    <Route path="/create-posts" element={<CreatePosts />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/change-password" element={<ChangePassword />} />
+                </Routes>
             </div>
-        </nav>
-    );
+            </>
+        )
+    }
 };
 
 
@@ -69,83 +147,15 @@ export default function Header(props) {
         userDetails();
     }, []);
 
-    if (!props.isAuthenticated){
-        return (
-            <>
-            <BrowserRouter>
-                <NavbarWithRouter />
-                <div className='page-content'>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/login" replace />} />
-                        <Route path="/login/*" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                    </Routes>
-                </div>
-            </BrowserRouter>
-            </>
-        )
-    } else {
-        return (
-            <>
-            <BrowserRouter>
-                <nav className="navbar navbar-expand-lg bg-body-tertiary">
-                    <div className="container-fluid">
-                        <a className="navbar-brand" href="/">
-                            <img src={`${backendUrl}/media/logo/SSLNewShortSVG.png`}
-                                className="img-fluid sslogo" alt="Sample image" />
-                        </a>
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                <span></span>
-                            </ul>
-                            { getHeaderDetails ?
-                                <nav className="navbar-nav me-auto mb-2 mb-lg-0">
-                                    <Link className="nav-link" to="/">👤Dashboard</Link>
-                                    <Link className="nav-link" to="/view-posts">📝View Posts</Link>
-                                    <Link className="nav-link" to="/create-posts">➕Create Post</Link>
-                                </nav>
-                                : ""
-                            }
-                            <div className='d-flex'>
-                                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                                    <li className="nav-item dropdown">
-                                        <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <img src={`${backendUrl}${getHeaderDetails.userImage}`} alt="User" className="avatar me-3"/>
-                                            {getHeaderDetails.fullName}
-                                        </a>
-                                        <ul className="dropdown-menu">
-                                            <li>
-                                                <Link className="dropdown-item" to="/profile">👤Profile</Link>
-                                            </li>
-                                            <li>
-                                                <Link className="dropdown-item" to="/change-password">🗝️Change Password</Link>
-                                            </li>
-                                            <li><hr className="dropdown-divider"/></li>
-                                            <li><a className="dropdown-item" href="#" onClick={() => props.logout()}>🚪{"Logout"}</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                            <ul className="mb-2 mb-lg-0">
-                                <span></span>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
-                <div className='page-content mt-4 pb-5'>
-                    <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/view-posts" element={<ViewPosts />} />
-                        <Route path="/create-posts" element={<CreatePosts />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/change-password" element={<ChangePassword />} />
-                    </Routes>
-                </div>
-            </BrowserRouter>
-            </>
-        )
-    }
+    return (
+        <>
+        <BrowserRouter>
+            <NavbarWithRouter
+                getHeaderDetails={getHeaderDetails}
+                isAuthenticated={props.isAuthenticated}
+                logout={props.logout}
+            />
+        </BrowserRouter>
+        </>
+    )
 }

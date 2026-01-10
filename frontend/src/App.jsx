@@ -30,12 +30,12 @@ const refreshAccessToken = async () => {
     if (!refresh) return false;
     
     const response = await axios.post(`${backendUrl}/auth/refresh/`,
-      {refreshToken: refresh}
+      {refresh: refresh}
     );
 
     if (response.data.access) {
-        localStorage.setItem("access", response.data.access);
-        return true;
+      localStorage.setItem("access", response.data.access);
+      return true;
       }
     return false;
   } catch (err) {

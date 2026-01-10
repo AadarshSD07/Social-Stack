@@ -1,5 +1,21 @@
 import React from 'react';
 
+const getTimeAgoBoolean = (dateString) => {
+  const date = new Date(dateString + 'Z');
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+
+  if (diffSeconds < 60) {
+    return true;
+  } else if (diffMinutes < 60) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Function to calculate time ago
 const getTimeAgo = (dateString) => {
   const date = new Date(dateString + 'Z');
@@ -30,4 +46,5 @@ const getTimeAgo = (dateString) => {
   }
 };
 
-export default getTimeAgo;
+// export default getTimeAgo;
+export { getTimeAgoBoolean, getTimeAgo };
