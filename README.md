@@ -133,9 +133,6 @@ npm start
 
 ## Future Enhancements
 
-- Add image/media support for posts
-- Implement post editing functionality
-- Add comments and likes
 - User profile pages
 - Post search and filtering
 - Real-time notifications
