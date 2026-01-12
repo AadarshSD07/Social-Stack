@@ -4,8 +4,9 @@ import LocalStorageVariables from '../Methods/LocalStorageVariables';
 import SocialPost from './LikeButton';
 
 const PostEdit = (props) => {
+    let post_desc = props.getHighlightedText ? props.getHighlightedText(props.post.post_desc) : props.post.post_desc;
     const [isEditing, setIsEditing] = useState(false);
-    const [editComment, setEditComment] = useState(props.post.post_desc);
+    const [editComment, setEditComment] = useState(post_desc);
 
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
     const config = LocalStorageVariables("config");

@@ -11,7 +11,7 @@ A full-stack social media basic application built with Django backend and React 
   - **Admin**: Elevated permissions for content moderation
 
 ### Registration
-- User can be created using register page located alongside login page
+- User can create an account from register page of website located alongside login page
 
 ### User Capabilities
 - Create posts with descriptions and images
@@ -19,11 +19,12 @@ A full-stack social media basic application built with Django backend and React 
 - Edit their own post's description on dashboard which is posted less than an hour ago
 - View all posts from any user
 - Add comments or like any posts
+- Post search and filtering
 - Delete their own posts
 
 ### Admin Capabilities
 - All user capabilities
-- Delete posts from any user (content moderation)
+- Delete posts of any user (content moderation)
 - Manage inappropriate or unfit content
 
 ### Application Sections
@@ -142,7 +143,6 @@ npm start
 ## Future Enhancements
 
 - User profile pages
-- Post search and filtering
 - Real-time notifications
 - Email verification
 

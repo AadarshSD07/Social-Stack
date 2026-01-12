@@ -138,7 +138,12 @@ class FetchUserPosts(APIView):
             .annotate(
                 created_at_str=Cast('created_at', CharField()),
                 # Coalesce ensures that if Count is None, it returns 0
-                likes_count=Coalesce(Count('likes'), Value(0))
+                likes_count=Coalesce(Count('likes'), Value(0)),
+                same_user=Case(
+                        When(user__username=request.user.username, then=Value(True)),
+                        default=Value(False),
+                        output_field=BooleanField()
+                )
             ).values(
                 "id",
                 "imageurl",
@@ -149,7 +154,8 @@ class FetchUserPosts(APIView):
                 "post_desc",
                 "editedPost",
                 "created_at_str",
-                "likes_count"
+                "likes_count",
+                "same_user"
             ).order_by("-created_at")
         )
         # liked_posts = list(PostLike.objects.filter(user=request.user).values_list("post__id", flat=True))

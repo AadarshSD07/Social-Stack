@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { getTimeAgo } from "../Methods/TimestampCalculation";
-import PostEdit from "../Components/PostEdit";
-import LocalStorageVariables from "../Methods/LocalStorageVariables";
 import axios from "axios";
+import Posts from "./Posts";
+import LocalStorageVariables from "../Methods/LocalStorageVariables";
 
 const Search = () => {
     const [error, setError] = useState(null);
@@ -14,54 +13,55 @@ const Search = () => {
 
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
     const config = LocalStorageVariables("config");
-
-    const updateStatus = (props) => {
-        setStatus(props.status);
-        setStatusMessage(props.message);
-    }
+    const permissionToDelete = getPostsData.isUserAdmin ? getPostsData.isUserAdmin : false;
+    const postEditingPermission = true;
 
     const Submit = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
+        let searchLetter = e.target.value
+        setSocialPosts([]);
+        setSearchedUsers([]);
+        setSearchText(searchLetter);
+        if (!searchLetter) {
+            setSocialPosts([]);
+            setSearchedUsers([]);
+            return
 
-        try {
-        const response = await axios.get(
-            `${backendDomain}/social/search/${searchText}/`,
-            config
-        );
-        if (response.status === 200){
-            setSearchedUsers(response.data.users);
-            setGetPostsData(response.data.posts);
-            setSocialPosts(JSON.parse(response.data.posts.socialPosts));
         }
 
+        try {
+            const response = await axios.get(
+                `${backendDomain}/social/search/${searchLetter}/`,
+                config
+            );
+            if (response.status === 200){
+                setSearchedUsers(response.data.users);
+                setGetPostsData(response.data.posts);
+                setSocialPosts(JSON.parse(response.data.posts.socialPosts));
+            }
+
         } catch (err) {
-        console.log("Error with request " + err);
+            console.log("Error with request " + err);
         }
     };
 
-    const deletePost = async (e) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+    const getHighlightedText = (text) => {
+        if (!searchText.trim()) return text;
 
-        try {
-            const response = await axios.delete(`${backendDomain}/social/user-posts/`,
-                {
-                data: {postId: e.currentTarget.id},
-                headers : config["headers"]
-                }
-            );
-            if (response.status === 200){
-                window.location.href = "/";
-            } else {
-                alert("Facing error "+ response.status + " to delete the post. Please try again after reloading the page.");
-                window.location.href = "/";
-            }
-        } catch (err) {
-            setError(err);
-        } finally {
-            setLoading(false);
-        }
+        // Split text on searchText term, preserving case using a capturing group (i for case-insensitive)
+        const parts = text.split(new RegExp(`(${searchText})`, 'gi'));
+
+        return (
+            <span>
+            {parts.map((part, index) =>
+                part.toLowerCase() === searchText.toLowerCase() ? (
+                    <mark key={index} className="highlighted-text">{part}</mark>
+                ) : (
+                    part
+                )
+            )}
+            </span>
+        );
     };
 
     if (loading) return <div>Loading ...</div>;
@@ -69,9 +69,9 @@ const Search = () => {
 
     return (
         <>
-        <form onSubmit={Submit} className="d-flex mb-3 w-75">
-            <input id='search' className="form-control me-2" onChange={(e) => setSearchText(e.target.value)} type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-success" type="submit">Search</button>
+        <form className="d-flex mb-3 w-75">
+            <input id='search' className="form-control me-2" onChange={Submit} type="search" placeholder="Search" aria-label="Search" />
+            {/* <button className="btn btn-outline-success" type="submit">Search</button> */}
         </form>
         <div className="post-container p-3 mb-3 w-75">
             <p className="form-label fs-3">Users</p>
@@ -90,12 +90,12 @@ const Search = () => {
                                         <div className="d-flex align-items-center">
                                             {
                                             user.first_name && user.last_name ?
-                                            <h5 className="mb-0 fw-bold">{user.first_name} {user.last_name}</h5>
+                                            <h5 className="mb-0 fw-bold">{getHighlightedText(user.first_name)} {getHighlightedText(user.last_name)}</h5>
                                             :
                                             "No fullname!"
                                             }
                                         </div>
-                                        <div className="username">@{user.username}</div>
+                                        <div className="username">@{getHighlightedText(user.username)}</div>
                                     </div>
                                     <button id={user.id} className='btn btn-primary'>Profile</button>
                                 </div>
@@ -108,68 +108,25 @@ const Search = () => {
         </div>
         <div className="post-container p-3 mb-3 w-75">
             <p className="form-label fs-3">Posts</p>
-            <div className="container">
-                { socialPosts.length < 1 ? (
+            {
+                socialPosts.length < 1 ? (
                     <div className="mt-4 text-center">
                         <p>No Posts</p>
                     </div>
-                ) :(
-                    socialPosts.map((post, index) => (
-                        <div className="post-container mt-4 shadow-lg" key={index}>
-                            <div className="post-header">
-                                <div className="d-flex align-items-center">
-                                <img src={`${backendDomain}/media/${ post.user__userprofile__image}`}
-                                    alt="Profile" className="avatar me-3"/>
-                                <div className="flex-grow-1">
-                                    <div className="d-flex align-items-center">
-                                        {
-                                        post.user__first_name && post.user__last_name ?
-                                        <h5 className="mb-0 fw-bold">{post.user__first_name} {post.user__last_name}</h5>
-                                        :
-                                        "No fullname!"
-                                        }
-                                    </div>
-                                    <div className="timestamp">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pin-angle-fill" viewBox="0 0 16 16">
-                                        <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1 0 .707c-.48.48-1.072.588-1.503.588-.177 0-.335-.018-.46-.039l-3.134 3.134a6 6 0 0 1 .16 1.013c.046.702-.032 1.687-.72 2.375a.5.5 0 0 1-.707 0l-2.829-2.828-3.182 3.182c-.195.195-1.219.902-1.414.707s.512-1.22.707-1.414l3.182-3.182-2.828-2.829a.5.5 0 0 1 0-.707c.688-.688 1.673-.767 2.375-.72a6 6 0 0 1 1.013.16l3.134-3.133a3 3 0 0 1-.04-.461c0-.43.108-1.022.589-1.503a.5.5 0 0 1 .353-.146"/>
-                                    </svg>
-                                    &nbsp; {getTimeAgo(post.created_at_str)}
-                                    </div>
-                                    <div className="username">@{post.user__username}</div>
-                                </div>
-
-                                    <button id={post.id} className='svgButton' onClick={deletePost}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
-                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                                    </svg></button>
-
-
-                                </div>
-                            </div>
-                                
-                            <div className="post-body">
-                                {
-                                post.imageurl ?
-                                    <div className="postImageContainer">
-                                    <img
-                                        src={`${backendDomain}/media/${post.imageurl}`}
-                                        alt="Post Image"
-                                        className="postImage me-3"
-                                    />
-                                    </div>
-                                :
-                                    ""
-                                }
-                                <PostEdit
-                                post={post}
-                                page={"Dashboard"}
-                                updateStatus={updateStatus}
-                                getPostsData={getPostsData}
-                                />
-                            </div>
-                        </div>
-                    )) )
-                }
-            </div>
+                ) : (
+                    <Posts
+                        pageTitle={"dashboard"}
+                        postEditingPermission={postEditingPermission}
+                        getPostsData={getPostsData}
+                        permissionToDelete={permissionToDelete}
+                        loading={loading}
+                        setLoading={setLoading}
+                        error={error}
+                        setError={setError}
+                        getHighlightedText={getHighlightedText}
+                    />
+                )
+            }
         </div>
         </>
     )

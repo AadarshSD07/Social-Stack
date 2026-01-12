@@ -6,17 +6,9 @@ from rest_framework import permissions, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .permissions import HasRole
 from .serializers import ChangePasswordSerializer, ProfileInformationSerializer, UserRegistrationSerializer
 
 # Create your views here.
-
-class AdminOnlyView(APIView):
-    permission_classes = [HasRole]
-    required_roles = ["ADMIN"]
-
-    def get(self, request):
-        return Response({"message": "Admin access granted"})
 
 class UserRegistration(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]

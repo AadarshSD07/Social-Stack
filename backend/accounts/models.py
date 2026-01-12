@@ -11,7 +11,7 @@ class User(AbstractUser):
     def get_user_role(self):
         user_role = UserRole.objects.filter(user=self)
         if user_role.exists():
-            return user_role.first().role.role
+            return user_role.first().role.name
         else:
             return False
 
@@ -23,11 +23,11 @@ class User(AbstractUser):
             return False
 
 class Role(models.Model):
-    role = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
 
     def __str__(self):
-        return f"{self.role}"
+        return f"{self.name}"
 
 class UserRole(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -54,10 +54,10 @@ def user_role_creation(sender, instance, created, **kwargs):
     roles = Role.objects.filter()
     roles_created = False
     if not roles.exists():
-        roles.create(role="admin", description="Permission for everything in this project. Creator, Destroyer, Owner of the project.")
-        roles.create(role="user", description="permission for selected pages and functionality of the project. Can only experience the project based on creation of admin.")
+        roles.create(name="admin", description="Permission for everything in this project. Creator, Destroyer, Owner of the project.")
+        roles.create(name="user", description="permission for selected pages and functionality of the project. Can only experience the project based on creation of admin.")
         roles_created = True
     
     assigning_role = "admin" if roles_created else "user"
     if created and not UserRole.objects.filter(user=instance).exists():
-        UserRole.objects.create(user=instance, role=roles.filter(role=assigning_role).first())
+        UserRole.objects.create(user=instance, role=roles.filter(name=assigning_role).first())
