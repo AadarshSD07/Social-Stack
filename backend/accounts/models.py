@@ -52,12 +52,9 @@ def user_profile_creation(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def user_role_creation(sender, instance, created, **kwargs):
     roles = Role.objects.filter()
-    roles_created = False
     if not roles.exists():
         roles.create(name="admin", description="Permission for everything in this project. Creator, Destroyer, Owner of the project.")
         roles.create(name="user", description="permission for selected pages and functionality of the project. Can only experience the project based on creation of admin.")
-        roles_created = True
-    
-    assigning_role = "admin" if roles_created else "user"
+
     if created and not UserRole.objects.filter(user=instance).exists():
-        UserRole.objects.create(user=instance, role=roles.filter(name=assigning_role).first())
+        UserRole.objects.create(user=instance, role=roles.filter(name="user").first())
