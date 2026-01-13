@@ -1,39 +1,37 @@
-# Social Media Project
+# 📱Social Media Project
 
 A full-stack social media basic application built with Django backend and React frontend, featuring JWT authentication and Role-Based Access Control (RBAC).
 
-## Features
+## ✨Features
 
-### Authentication & Authorization
+### 🔐Authentication & Authorization
 - JWT (JSON Web Token) based authentication
 - Role-Based Access Control (RBAC) system with two roles:
   - **User**: Standard user with basic permissions
   - **Admin**: Elevated permissions for content moderation
 
-### Registration
-- User can create an account from register page of website located alongside login page
-
-### User Capabilities
+### 👤User Capabilities
+- Register and log in
 - Create posts with descriptions and images
-- View their own posts on the dashboard
-- Edit their own post's description on dashboard which is posted less than an hour ago
-- View all posts from any user
-- Add comments or like any posts
-- Post search and filtering
-- Delete their own posts
+- View and manage own posts on the dashboard
+- Edit post descriptions (within 1 hour of posting)
+- View all posts from all users
+- Like and comment on posts
+- Search and filter posts
+- Delete own posts
 
-### Admin Capabilities
+### 🛡️Admin Capabilities
 - All user capabilities
 - Delete posts of any user (content moderation)
 - Manage inappropriate or unfit content
 
-### Application Sections
+### 📂Application Sections
 1. **Dashboard**: Displays the logged-in user's posts
 2. **View Posts**: Shows all posts from all users
-3. **Create Post**: Form to create new posts with description field
+3. **Create Post**: Form to create new posts with description field and images field
 4. **Profile**: Form to update user details
 5. **Change Password**: Form to change password using previous password
-
+6. **Search**: Searches users and posts with descriptions that matches searched text
 
 ## Tech Stack
 
@@ -45,9 +43,9 @@ A full-stack social media basic application built with Django backend and React 
 ### Frontend
 - React
 - React Router
-- Axios/Fetch
+- Axios / Fetch
 
-## Project Structure
+## 📁Project Structure
 
 ```
 project-root/
@@ -56,14 +54,14 @@ project-root/
 └── package.json      # Root package.json for concurrent server execution
 ```
 
-## Installation
+## ⚙️Installation & Setup
 
 ### Prerequisites
 - Python 3.x
-- Node.js and npm
+- Node.js & npm
 - pip (Python package manager)
 
-### Setup
+### Steps
 
 1. **Clone the repository**
    ```bash
@@ -90,7 +88,7 @@ project-root/
    npm install
    ```
 
-## Running the Application
+## 🚀Running the Application
 
 ### Development Mode
 
@@ -118,19 +116,27 @@ cd frontend
 npm start
 ```
 
-## API Endpoints
+## 📡API Endpoints
 
 ### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh` - Refresh JWT token
+- `POST /auth/login/` – User login
+- `POST /auth/refresh/` – Refresh JWT token
 
-### Posts
-- `GET /social/social-posts/` - Get all posts
-- `POST /social/user-posts/` - Create a new post
-- `GET /social/user-posts/` - Get current user's posts
-- `DELETE /social/user-posts/:id/` - Delete a post (own posts for users, any post for admins)
+### Accounts
+- `POST /accounts/register/` – Register a new user
+- `GET/POST /accounts/user-details/` – Fetch or update user profile information
+- `POST /accounts/change-user-password/` – Change user password
 
-## User Roles & Permissions
+### Social
+- `GET /social/social-posts/` – Get all posts
+- `POST /social/user-posts/` – Create a new post
+- `GET /social/user-posts/` – Get current user's posts
+- `DELETE /social/user-posts/:id/` – Delete a post (own posts for users, any post for admins)
+- `POST /social/like/:id/` – Like a post
+- `POST /social/comment/:id/` – Comment on a post
+- `GET /social/search/:search_text/` – Search users and posts by keyword
+
+## 👥User Roles & Permissions
 
 | Action | User | Admin |
 |--------|------|-------|
@@ -141,13 +147,13 @@ npm start
 | Delete Own Posts | ✓ | ✓ |
 | Delete Any Post | ✗ | ✓ |
 
-## Future Enhancements
+## 🔮Future Enhancements
 
-- User profile pages
+- Dedicated user profile pages
 - Real-time notifications
 - Email verification
 
-## Contributing
+## 🤝Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -155,10 +161,10 @@ npm start
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## 📜License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Contact
+## 📬Contact
 
 For questions or support, please open an issue in the repository.
