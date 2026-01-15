@@ -44,8 +44,7 @@ A full-stack social media basic application built with Django backend and React 
 ### Frontend
 - React
 - React Router (for navigation)
-- Axios
-- Fetch
+- Axios/Fetch
 
 ## Project Structure
 
@@ -137,6 +136,7 @@ npm start
 | Create Post | ✓ | ✓ |
 | View Own Posts | ✓ | ✓ |
 | View All Posts | ✓ | ✓ |
+| Edit Own Posts | ✓ | ✓ |
 | Delete Own Posts | ✓ | ✓ |
 | Delete Any Post | ✗ | ✓ |
 
