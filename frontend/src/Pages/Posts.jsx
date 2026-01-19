@@ -56,7 +56,8 @@ const Posts = (props) => {
   if (props.loading) return <div>Loading posts...</div>;
   if (props.error) return <div>Error: {props.error}</div>;
 
-  const socialPosts = JSON.parse(getPostsData.socialPosts);
+  // const socialPosts = JSON.parse(getPostsData.socialPosts);
+  const socialPosts = getPostsData.socialPosts;
   const getHighlightedText = props.getHighlightedText ? props.getHighlightedText : false;
 
   return (
@@ -73,27 +74,24 @@ const Posts = (props) => {
         </div>
       ) : (
         socialPosts.map((post, index) => (
-            <div className="post-container mt-4 shadow-sm" key={index}>
+            <div className="post-container mt-4 shadow-lg" key={index}>
               <div className="post-header">
                 <div className="d-flex align-items-center">
-                  <img src={`${backendDomain}/media/${ post.user__userprofile__image}`}
+                  <img src={`${backendDomain}${ post.user_profile_image}`}
                     alt="Profile" className="avatar me-3"/>
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center">
+                      <h5 className="mb-0 fw-bold truncate-text">
                         {
-                          post.user__first_name && post.user__last_name ?
-                          <h5 className="mb-0 fw-bold">{post.user__first_name} {post.user__last_name}</h5>
+                          post.first_name && post.last_name ?(
+                            post.first_name + " " +post.last_name
+                          )
                           :
                           "No fullname!"
                         }
+                      </h5>
                     </div>
-                    <div className="timestamp">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pin-angle-fill" viewBox="0 0 16 16">
-                        <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1 0 .707c-.48.48-1.072.588-1.503.588-.177 0-.335-.018-.46-.039l-3.134 3.134a6 6 0 0 1 .16 1.013c.046.702-.032 1.687-.72 2.375a.5.5 0 0 1-.707 0l-2.829-2.828-3.182 3.182c-.195.195-1.219.902-1.414.707s.512-1.22.707-1.414l3.182-3.182-2.828-2.829a.5.5 0 0 1 0-.707c.688-.688 1.673-.767 2.375-.72a6 6 0 0 1 1.013.16l3.134-3.133a3 3 0 0 1-.04-.461c0-.43.108-1.022.589-1.503a.5.5 0 0 1 .353-.146"/>
-                      </svg>
-                      &nbsp; {getTimeAgo(post.created_at_str)}
-                    </div>
-                    <div className="username">@{post.user__username}</div>
+                    <div className="username truncate-text">@{post.username}</div>
                   </div>
                   { props.permissionToDelete || post.same_user ?
                     <button id={post.id} className='svgButton' onClick={deletePost}>
@@ -111,7 +109,7 @@ const Posts = (props) => {
                   post.imageurl ?
                     <div className="postImageContainer">
                       <img
-                        src={`${backendDomain}/media/${post.imageurl}`}
+                        src={`${backendDomain}${post.imageurl}`}
                         alt="Post Image"
                         className="postImage me-3"
                       />
@@ -120,16 +118,34 @@ const Posts = (props) => {
                     ""
                 }
                 <PostEdit
+                  postImage={post.imageurl}
                   post={post}
                   postEditingPermission={props.postEditingPermission}
                   updateStatus={updateStatus}
                   getPostsData={props.getPostsData}
                   getHighlightedText={getHighlightedText}
+                  postTimeline={getTimeAgo(post.created_at_str)}
                 />
               </div>
             </div>
         )) )
       }
+      {/* <nav aria-label="Page navigation example" className="d-flex justify-content-center mt-5">
+        <ul className="pagination">
+          {
+            props.pagination[0] ?
+              <li className="page-item"><a className="page-link" href={props.pagination[0]}>Previous</a></li>
+            :
+              <li className="page-item"><a className="page-link" href="#" disabled>Previous</a></li>
+          }
+          {
+            props.pagination[1] ?
+              <li className="page-item"><a className="page-link" href={props.pagination[1]}>Next</a></li>
+            :
+              <li className="page-item"><a className="page-link" href="#" disabled>Next</a></li>
+          }
+        </ul>
+      </nav> */}
     </div>
     </>
   )

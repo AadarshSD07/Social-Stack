@@ -5,12 +5,14 @@ import os
 load_dotenv()  # Load variables from .env
 
 class Config:
+    """HTTP status code configuration"""
     success = status.HTTP_200_OK
     no_content = status.HTTP_204_NO_CONTENT
     unauthorized = status.HTTP_401_UNAUTHORIZED
     accepted = status.HTTP_202_ACCEPTED
     forbidden = status.HTTP_403_FORBIDDEN
     bad_request = status.HTTP_400_BAD_REQUEST
+    created = status.HTTP_201_CREATED
 
     database_url = os.getenv('DATABASE_URL')
     api_key = os.getenv('API_KEY')

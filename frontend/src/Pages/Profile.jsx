@@ -142,7 +142,7 @@ export default function Profile() {
                                 </div>
 
                                 {/* Hidden file input */}
-                                <input id="userImage" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden mt-4" />
+                                <input id="user_image" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden mt-4" />
                             </div>
 
                             {/* Upload button (only show when image is selected) */}

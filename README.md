@@ -128,9 +128,9 @@ npm start
 - `POST /accounts/change-user-password/` – Change user password
 
 ### Social
-- `GET /social/social-posts/` – Get all posts
-- `POST /social/user-posts/` – Create a new post
-- `GET /social/user-posts/` – Get current user's posts
+- `GET /social/posts/` – Get all posts
+- `POST /social/posts/` – Create a new post
+- `GET /social/user-posts/?post_type=user` – Get current user's posts
 - `DELETE /social/user-posts/:id/` – Delete a post (own posts for users, any post for admins)
 - `POST /social/like/:id/` – Like a post
 - `POST /social/comment/:id/` – Comment on a post

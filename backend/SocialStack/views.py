@@ -10,8 +10,8 @@ def fetch_user_details(request):
         return {
             "fullName": (request.user.first_name + " " + request.user.last_name)[:10],
             "username": request.user.username,
-            "isUserAdmin": request.user.get_user_role() == "admin",
-            "userImage": request.user.get_user_profile_image().url
+            "isUserAdmin": request.user.role.name == "admin",
+            "user_image": request.user.profile_image.url
         }
     else:
         return {}
@@ -30,3 +30,5 @@ class HeaderDetails(APIView):
     def get(self, request):
         response = fetch_user_details(request)
         return Response(response, status=Config.success)
+
+        

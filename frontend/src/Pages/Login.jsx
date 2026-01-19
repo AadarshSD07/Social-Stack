@@ -38,8 +38,8 @@ const Login = () => {
 
   return (
     <>
-    <h1 className="text-center pt-4">Login</h1>
-    <div className='container-md py-3 field-width'>
+    <div className='post-container p-3 shadow-lg field-width mt-4 pb-5'>
+      <p className="text-center pt-4 fs-1">Login</p>
       <form onSubmit={handleSubmit}>
         {error && (
           <div className="alert alert-danger" role="alert">
@@ -48,22 +48,23 @@ const Login = () => {
         )}
         
         <div className="form-group mt-2">
-          <label htmlFor="username">Username</label>
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="form-control"
-          placeholder="Username" id="username" minLength="3" maxLength="150" disabled={loading} required />
+          <label className="fw-semibold" htmlFor="username">Username</label>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="form-control shadow-sm"
+            placeholder="username" id="username" minLength="3" maxLength="150" disabled={loading} required />
         </div>
         
         <div className="form-group mt-2">
-          <label htmlFor="password">Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" 
-            placeholder="Password" id="password" minLength="8" disabled={loading} required />
-
+          <label className="fw-semibold" htmlFor="password">Password</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control shadow-sm" 
+            placeholder="password" id="password" minLength="8" disabled={loading} required />
           <small className="form-text text-muted">Password must be at least 8 characters long.</small>
         </div>
         
-        <button type="submit" className="btn btn-primary mt-2" disabled={loading}>
-          {loading ? 'SIGNING IN...' : 'SIGN IN'}
-        </button>
+        <div className="d-flex justify-content-center mt-4 w-25 mx-auto">
+          <button type="submit" className="login-button shadow mt-2" disabled={loading}>
+            {loading ? 'SIGNING IN...' : 'SIGN IN'}
+          </button>
+        </div>
       </form>
     </div>
     </>

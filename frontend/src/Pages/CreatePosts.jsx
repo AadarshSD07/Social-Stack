@@ -60,14 +60,14 @@ export default function CreatePosts() {
 
     try {
       const response = await axios.post(
-        `${backendDomain}/social/user-posts/`,
+        `${backendDomain}/social/posts/`,
         formData,
         config
       );
-      if (response.status === 200){
+      if (response.status === 201){
         setDesc("");
         setStatus("success");
-        setStatusMessage("Successfully created new post");
+        setStatusMessage(response.data.message);
         handleImageRemoval();
       }
 
@@ -80,14 +80,14 @@ export default function CreatePosts() {
 
   return (
     <>
-      <div className="w-75">
+      <div className="w-75 mt-4 pb-5">
         <form onSubmit={Submit}>
           {statusMessage && (
             <div className={`alert alert-${status}`} role="alert">
                 {statusMessage}
             </div>
           )}
-          <div className="post-container p-3 mb-3">
+          <div className="post-container p-3 mb-3 shadow-lg">
             <label htmlFor="desc" className="form-label fs-3">
               Create a New Post
             </label>
@@ -113,7 +113,7 @@ export default function CreatePosts() {
                     )}
 
                   {/* Hidden file input */}
-                  <input id="userImage" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
+                  <input id="user_image" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
                   {/* Help text */}
                   <p className="text-sm text-gray-500 mt-2">
                       Click the image to upload a new profile picture
@@ -135,13 +135,13 @@ export default function CreatePosts() {
               id="desc" 
               value={desc} // ✅ Using lowercase 't'
               onChange={(e) => setDesc(e.target.value)} // ✅ Lowercase 't'
-              className="form-control shadow-sm mt-3" 
+              className="form-control shadow mt-3" 
               placeholder='Write something...'
             />
-          </div>
-          <button type="submit" className="btn btn-primary px-5">
+          <button type="submit" className="btn btn-primary px-5 mt-4 shadow">
             Post
           </button>
+          </div>
         </form>
       </div>
     </>

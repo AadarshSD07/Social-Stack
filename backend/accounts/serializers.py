@@ -11,26 +11,43 @@ User = get_user_model()
 logger = logging.getLogger(__name__)
 
 class UserRegistrationSerializer(serializers.Serializer):
+    """
+    Serializer for handling new user registrations.
+    
+    Validates unique credentials, ensures password strength, and 
+    handles the secure creation of User instances.
+    """
     username = serializers.CharField(
         required=True,
         max_length=150,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all(), message="A user with that username already exists.")]
     )
     password = serializers.CharField(
         required=True,
         write_only=True,
         min_length=8,
-        style={'input_type': 'password'}
+        style={'input_type': 'password'},
+        help_text="Password must be at least 8 characters long."
     )
     first_name = serializers.CharField(required=True, max_length=30)
     last_name = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all(), message="A user with that email already exists.")]
     )
 
     def create(self, validated_data):
-        # Check if username already exists (redundant due to validator, but safe)
+        """
+        Creates and returns a new User instance.
+        
+        Args:
+            validated_data (dict): Data passed from the view after validation.
+            
+        Returns:
+            User: The newly created user instance.
+        """
+        # We use User.objects.create_user because it handles password hashing 
+        # automatically and is the standard practice in Django.
         if User.objects.filter(username=validated_data["username"]).exists():
             raise serializers.ValidationError({
                 "username": "User already exists with this username!"
@@ -58,7 +75,7 @@ class ProfileInformationSerializer(serializers.Serializer):
     Serializer for user profile information including username, name, email, and profile image.
 
     This serializer handles both retrieval and updates of user profile data,
-    with special handling for the profile image stored in a related UserProfile model.
+    with special handling for the profile image stored in a related User model.
     """
     username=serializers.CharField(required=True)
     first_name = serializers.CharField(required=True)
@@ -98,10 +115,9 @@ class ProfileInformationSerializer(serializers.Serializer):
             elif field_name == 'imageUrl':
                 default_image = "/media/user_profile_images/default-user-image.png"
                 try:
-                    # Get the first userprofile if exists
-                    user_profile = user_instance.userprofile_set.first()
-                    if user_profile and user_profile.image:
-                        value = user_profile.image.url
+                    # Get the profile image if exists
+                    if user_instance.profile_image:
+                        value = user_instance.profile_image.url
                     else:
                         value = default_image
                 except (AttributeError, ObjectDoesNotExist) as e:
@@ -157,15 +173,9 @@ class ProfileInformationSerializer(serializers.Serializer):
             # Handle special fields
             if field_name == 'imageUrl':
                 try:
-                    user_profile = user_instance.userprofile_set.first()
-                    if user_profile:
-                        user_profile.image = value
-                        user_profile.save()
-                        updated_fields.append(field_name)
-                    else:
-                        error_msg = "User profile does not exist"
-                        logger.error(error_msg)
-                        errors.append(error_msg)
+                    user_instance.profile_image = value
+                    user_instance.save()
+                    updated_fields.append(field_name)
                 except Exception as e:
                     error_msg = f"Error updating image: {str(e)}"
                     logger.error(error_msg)
@@ -208,34 +218,50 @@ class ProfileInformationSerializer(serializers.Serializer):
         return True, None
 
 class ChangePasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True, write_only=True)
-    new_password = serializers.CharField(required=True, write_only=True)
-    confirm_password = serializers.CharField(required=True, write_only=True)
+    """
+    Serializer for authenticated password change requests.
+    
+    Validates the relationship between the old password, the new password,
+    and a confirmation field.
+    """
+    old_password = serializers.CharField(
+        required=True, 
+        write_only=True,
+        style={'input_type': 'password'}
+    )
+    new_password = serializers.CharField(
+        required=True, 
+        write_only=True,
+        style={'input_type': 'password'}
+    )
+    confirm_password = serializers.CharField(
+        required=True, 
+        write_only=True,
+        style={'input_type': 'password'}
+    )
 
     def validate(self, attrs):
-        if attrs['new_password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"confirm_password": "New passwords don't match."})
+        """
+        Perform cross-field validation for password logic.
         
-        elif attrs['old_password'] == attrs['new_password']:
-            raise serializers.ValidationError({"new_password": "Old password and new password are both same."})
+        Checks:
+        1. New password matches confirmation.
+        2. New password is not the same as the old password.
+        3. New password meets Django's security requirements.
+        """
+        # Ensure the two new password entries match
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({
+                "confirm_password": "New passwords do not match."
+            })
+        
+        # Prevent the user from 'changing' their password to the current one
+        if attrs['old_password'] == attrs['new_password']:
+            raise serializers.ValidationError({
+                "new_password": "The new password cannot be the same as the old password."
+            })
 
-        # Validate password strength
+        # Run Django's built-in password validators (length, common patterns, etc.)
         validate_password(attrs['new_password'])
         
-        return attrs
-
-class ResetPasswordEmailSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-
-class ResetPasswordSerializer(serializers.Serializer):
-    new_password = serializers.CharField(required=True, write_only=True)
-    confirm_password = serializers.CharField(required=True, write_only=True)
-    token = serializers.CharField(required=True)
-    uid = serializers.CharField(required=True)
-
-    def validate(self, attrs):
-        if attrs['new_password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"confirm_password": "Passwords don't match."})
-        
-        validate_password(attrs['new_password'])
         return attrs

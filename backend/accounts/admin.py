@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.models import User, Role, UserRole, UserProfile
+from accounts.models import User, Role
 # Register your models here.
 
 class AdminUserRole(admin.ModelAdmin):
@@ -10,5 +10,3 @@ class AdminUserRole(admin.ModelAdmin):
 
 admin.site.register(User)
 admin.site.register(Role)
-admin.site.register(UserRole, AdminUserRole)
-admin.site.register(UserProfile)

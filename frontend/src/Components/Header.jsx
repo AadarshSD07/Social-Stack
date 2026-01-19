@@ -94,7 +94,7 @@ const NavbarWithRouter = (props) => {
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src={`${backendDomain}${props.getHeaderDetails.userImage}`} alt="User" className="avatar me-3"/>
+                                        <img src={`${backendDomain}${props.getHeaderDetails.user_image}`} alt="User" className="avatar me-3"/>
                                         {props.getHeaderDetails.fullName}
                                     </a>
                                     <ul className="dropdown-menu">
@@ -116,7 +116,7 @@ const NavbarWithRouter = (props) => {
                     </div>
                 </div>
             </nav>
-            <div className='page-content mt-4 pb-5'>
+            <div className='page-content'>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/view-posts" element={<ViewPosts />} />

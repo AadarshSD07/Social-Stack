@@ -70,8 +70,8 @@ const Register = () => {
 
     return (
         <>
-        <h1 className="text-center pt-4">Register</h1>
-        <div className='container-md py-3 field-width'>
+        <div className='post-container p-3 shadow-lg field-width mt-4 pb-5'>
+            <h1 className="text-center pt-4 fs-1">Register</h1>
             <form onSubmit={handleSubmit}>
                 {error && (
                 <div className="alert alert-danger" role="alert">
@@ -80,27 +80,27 @@ const Register = () => {
                 )}
                 
                 <div className="form-group mt-2">
-                    <label htmlFor="username">Username</label>
-                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="form-control"
-                        placeholder="Username" id="username" minLength="3" maxLength="150" disabled={loading} required />
+                    <label className="fw-semibold" htmlFor="username">Username</label>
+                    <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="form-control shadow-sm"
+                        placeholder="username" id="username" minLength="3" maxLength="150" disabled={loading} required />
                 </div>
 
                 <div className="form-group mt-2">
-                    <label htmlFor="email">Email</label>
-                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control"
-                        placeholder="Email" id="email" minLength="3" maxLength="150" disabled={loading} required />
+                    <label className="fw-semibold" htmlFor="email">Email</label>
+                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control shadow-sm"
+                        placeholder="email" id="email" minLength="3" maxLength="150" disabled={loading} required />
                 </div>
 
                 <div className="form-group mt-2 row">
-                    <div className="col">
-                        <label htmlFor="firstname" className="form-label">
+                    <div className="col-md-6">
+                        <label className="fw-semibold form-label" htmlFor="firstname">
                         First Name
                         </label>
                         <input id="firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} className="form-control shadow-sm" 
                         type="text" placeholder="first name" required />
                     </div>
-                    <div className="col">
-                        <label htmlFor="lastname" className="form-label">
+                    <div className="col-md-6">
+                        <label className="fw-semibold form-label" htmlFor="lastname">
                         Last Name
                         </label>
                         <input id="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} className="form-control shadow-sm" 
@@ -109,16 +109,18 @@ const Register = () => {
                 </div>
                 
                 <div className="form-group mt-2">
-                    <label htmlFor="password">Create Password</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control" 
-                        placeholder="Password" id="password" minLength="8" disabled={loading} required />
+                    <label className="fw-semibold" htmlFor="password">Create Password</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="form-control shadow-sm" 
+                        placeholder="password" id="password" minLength="8" disabled={loading} required />
 
                     <small className="form-text text-muted">Password must be at least 8 characters long.</small>
                 </div>
                 
-                <button type="submit" className="btn btn-primary mt-2" disabled={loading}>
-                    {loading ? 'SIGNING UP...' : 'SIGN UP'}
-                </button>
+                <div className="d-flex justify-content-center mt-4 w-50 mx-auto">
+                    <button type="submit" className="register-button shadow mt-2" disabled={loading}>
+                        {loading ? 'SIGNING UP...' : 'SIGN UP'}
+                    </button>
+                </div>
             </form>
         </div>
         </>

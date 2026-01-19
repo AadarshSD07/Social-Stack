@@ -10,23 +10,26 @@ const Search = () => {
     const [socialPosts, setSocialPosts] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [searchedUsers, setSearchedUsers] = useState([]);
+    const [totalResponseUsers, setTotalResponseUsers] = useState(0);
+    const [totalResponsePosts, setTotalResponsePosts] = useState(0);
 
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
     const config = LocalStorageVariables("config");
-    const permissionToDelete = getPostsData.isUserAdmin ? getPostsData.isUserAdmin : false;
+    const permissionToDelete = getPostsData.permissionToDelete ? getPostsData.permissionToDelete : false;
     const postEditingPermission = true;
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        return await Submit(e)
+    }
+
     const Submit = async (e) => {
-        // e.preventDefault();
         let searchLetter = e.target.value
         setSocialPosts([]);
         setSearchedUsers([]);
         setSearchText(searchLetter);
         if (!searchLetter) {
-            setSocialPosts([]);
-            setSearchedUsers([]);
             return
-
         }
 
         try {
@@ -35,9 +38,11 @@ const Search = () => {
                 config
             );
             if (response.status === 200){
+                setTotalResponseUsers(response.data.users.length);
+                setTotalResponsePosts(response.data.posts.socialPosts.length);
                 setSearchedUsers(response.data.users);
                 setGetPostsData(response.data.posts);
-                setSocialPosts(JSON.parse(response.data.posts.socialPosts));
+                setSocialPosts(response.data.posts.socialPosts);
             }
 
         } catch (err) {
@@ -69,12 +74,25 @@ const Search = () => {
 
     return (
         <>
-        <form className="d-flex mb-3 w-75">
-            <input id='search' className="form-control me-2" onChange={Submit} type="search" placeholder="Search" aria-label="Search" />
-            {/* <button className="btn btn-outline-success" type="submit">Search</button> */}
+        <form className="d-flex mb-3 w-75 mt-4">
+            <input id='search' className="form-control me-2" onChange={Submit} type="search" placeholder="Search" aria-label="Search"
+                onKeyDown={(e) => {
+                    // Check for Enter key
+                    if (e.key === 'Enter') {
+                        handleSubmit(e);
+                    }
+                }}
+            />
         </form>
-        <div className="post-container p-3 mb-3 w-75">
-            <p className="form-label fs-3">Users</p>
+        <div className="post-container2 p-3 mb-3 w-75">
+            <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
+                    <p className="form-label fs-3">Users</p>
+                </div>
+                <p className="form-label fs-6 text-primary">
+                    {totalResponseUsers > 0 && `${totalResponseUsers} search${totalResponseUsers > 1 ? 'es' : ''}`}
+                </p>
+            </div>
             <div className="container">
                 { searchedUsers.length < 1 ? (
                     <div className="mt-4 text-center">
@@ -85,17 +103,17 @@ const Search = () => {
                         <div className="post-container mt-3 shadow-lg" key={index}>
                             <div className="post-header2">
                                 <div className="d-flex align-items-center">
-                                    <img src={`${backendDomain}/media/${ user.userprofile__image}`} alt="Profile" className="avatar me-3"/>
+                                    <img src={`${backendDomain}/media/${ user.profile_image}`} alt="Profile" className="avatar me-3"/>
                                     <div className="flex-grow-1">
                                         <div className="d-flex align-items-center">
                                             {
                                             user.first_name && user.last_name ?
-                                            <h5 className="mb-0 fw-bold">{getHighlightedText(user.first_name)} {getHighlightedText(user.last_name)}</h5>
+                                                <h5 className="mb-0 fw-bold truncate-text">{getHighlightedText(user.first_name)} {getHighlightedText(user.last_name)}</h5>
                                             :
-                                            "No fullname!"
+                                                "No fullname!"
                                             }
                                         </div>
-                                        <div className="username">@{getHighlightedText(user.username)}</div>
+                                        <div className="username truncate-text">@{getHighlightedText(user.username)}</div>
                                     </div>
                                     <button id={user.id} className='btn btn-primary'>Profile</button>
                                 </div>
@@ -106,8 +124,15 @@ const Search = () => {
             </div>
             
         </div>
-        <div className="post-container p-3 mb-3 w-75">
-            <p className="form-label fs-3">Posts</p>
+        <div className="post-container2 p-3 mb-3 w-75">
+            <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
+                    <p className="form-label fs-3">Posts</p>
+                </div>
+                <p className="form-label fs-6 text-primary">
+                    {totalResponsePosts > 0 && `${totalResponsePosts} search${totalResponsePosts > 1 ? 'es' : ''}`}
+                </p>
+            </div>
             {
                 socialPosts.length < 1 ? (
                     <div className="mt-4 text-center">
@@ -124,6 +149,7 @@ const Search = () => {
                         error={error}
                         setError={setError}
                         getHighlightedText={getHighlightedText}
+                        pagination={[null, null]}
                     />
                 )
             }

@@ -2,6 +2,7 @@ from django.urls import path
 from social import views
 
 urlpatterns = [
+    path('posts/', views.SocialPostsAPIView.as_view(), name='posts'),
     path('social-posts/', views.FetchSocialPosts.as_view(), name='social_posts'),
     path('user-posts/', views.FetchUserPosts.as_view(), name='user_posts'),
     path('like/<int:id>/', views.PostsLike.as_view(), name='like_post'),
