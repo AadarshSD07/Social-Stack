@@ -6,7 +6,6 @@ import CreatePosts from '../Pages/CreatePosts';
 import Dashboard from '../Pages/Dashboard';
 import LocalStorageVariables from '../Methods/LocalStorageVariables';
 import Login from '../Pages/Login';
-import Posts from '../Pages/Posts';
 import Profile from '../Pages/Profile';
 import Register from '../Pages/Register';
 import Search from '../Pages/Search';

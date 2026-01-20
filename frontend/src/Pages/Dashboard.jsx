@@ -41,20 +41,20 @@ export default function Dashboard() {
 
   return (
     <>
-    <div className='mt-4 pb-5'>
-      <h3 className='fs-3 text-center'>Self Posts</h3>
-      <Posts
-        pageTitle={"dashboard"}
-        postEditingPermission={postEditingPermission}
-        getPostsData={getPostsData}
-        permissionToDelete={permissionToDelete}
-        loading={loading}
-        setLoading={setLoading}
-        error={error}
-        setError={setError}
-        pagination={[prevUrl, nextUrl]}
-      />
-    </div>
+    {/* <div className="profile-container w-100">
+    </div> */}
+    <h3 className='mt-4 fs-3 text-center'>Self Posts</h3>
+    <Posts
+      pageTitle={"dashboard"}
+      postEditingPermission={postEditingPermission}
+      getPostsData={getPostsData}
+      permissionToDelete={permissionToDelete}
+      loading={loading}
+      setLoading={setLoading}
+      error={error}
+      setError={setError}
+      pagination={[prevUrl, nextUrl]}
+    />
     </>
   )
 }

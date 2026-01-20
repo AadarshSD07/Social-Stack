@@ -11,17 +11,8 @@ const Posts = (props) => {
 
   const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
   const config = LocalStorageVariables("config");
-  let redirectUrl = "";
-  let backendUrl = "";
+  let backendUrl = `${backendDomain}/social/posts/`;
   let getPostsData = props.getPostsData;
-
-  if (props.pageTitle == "dashboard") {
-    backendUrl = `${backendDomain}/social/user-posts/`;
-    redirectUrl = "/";
-  } else {
-    backendUrl = `${backendDomain}/social/social-posts/`;
-    redirectUrl = "/view-posts";
-  }
 
   const updateStatus = (data) => {
     setStatus(data.status);
@@ -31,7 +22,6 @@ const Posts = (props) => {
   const deletePost = async (e) => {
     e.preventDefault();
     props.setError("");
-    props.setLoading(true);
 
     try {
       const response = await axios.delete(backendUrl,
@@ -41,22 +31,24 @@ const Posts = (props) => {
         }
       );
       if (response.status === 200){
-        window.location.href = redirectUrl;
+        const targetDiv = document.getElementById(`div-${e.target.parentNode.parentElement.id}`);
+        if (targetDiv) {
+          targetDiv.remove();
+        } else {
+          console.warn('Target div not found to remove the post in UI.');
+        }
+        updateStatus({status: "success", message: response.data.message});
       } else {
-        alert("Facing error while deleting the post: "+ response.status);
-        window.location.href = redirectUrl;
+        updateStatus({status: "danger", message: "Facing error while deleting the post: " + response.status});
       }
     } catch (err) {
       props.setError(err);
-    } finally {
-      props.setLoading(false);
     }
   };
 
   if (props.loading) return <div>Loading posts...</div>;
   if (props.error) return <div>Error: {props.error}</div>;
 
-  // const socialPosts = JSON.parse(getPostsData.socialPosts);
   const socialPosts = getPostsData.socialPosts;
   const getHighlightedText = props.getHighlightedText ? props.getHighlightedText : false;
 
@@ -64,7 +56,7 @@ const Posts = (props) => {
     <>
     <div className="container">
       {statusMessage && (
-        <div className={`alert alert-${status}`} role="alert">
+        <div className={`alert alert-${status} mt-3`} role="alert">
             {statusMessage}
         </div>
       )}
@@ -74,7 +66,7 @@ const Posts = (props) => {
         </div>
       ) : (
         socialPosts.map((post, index) => (
-            <div className="post-container mt-4 shadow-lg" key={index}>
+            <div className="post-container mt-4 shadow-lg" id={`div-${post.id}`} key={index}>
               <div className="post-header">
                 <div className="d-flex align-items-center">
                   <img src={`${backendDomain}${ post.user_profile_image}`}

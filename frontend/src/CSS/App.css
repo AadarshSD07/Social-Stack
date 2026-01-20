@@ -91,11 +91,17 @@
 }
 
 .post-container2 {
-    /* max-width: 60rem; */
     margin: auto;
     border: 1px solid #dbdfe4;
     border-radius: 16px;
     background-color: #f2f8ff;
+}
+
+.profile-container {
+    /* border-radius: 16px; */
+    margin: auto;
+    border: 1px solid #dbdfe4;
+    background-color: #f8f9fa;
 }
 
 .post-header {
@@ -238,11 +244,6 @@ height: calc(100% - 73px);
   padding: 8px;
   resize: vertical;
   background-color: #f0f0f0aa;
-}
-
-.edit-buttons {
-  margin-top: 8px;
-  gap: 8px;
 }
 
 .login-button,

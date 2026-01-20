@@ -8,7 +8,6 @@ const PostEdit = (props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editComment, setEditComment] = useState(post_desc);
     const [commentEdited, setcommentEdited] = useState(props.post.editedPost);
-    debugger
 
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
     const config = LocalStorageVariables("config");
@@ -52,7 +51,7 @@ const PostEdit = (props) => {
                     autoFocus
                 />
                 <div className="edit-buttons">
-                    <button onClick={() => handleSave(props.post.id)}>Save</button>
+                    <button className='m-2' onClick={() => handleSave(props.post.id)}>Save</button>
                     <button onClick={() => handleCancel(props.post)}>Cancel</button>
                 </div>
             </div>

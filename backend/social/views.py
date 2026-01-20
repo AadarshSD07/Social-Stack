@@ -173,12 +173,12 @@ class SocialPostsAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = CustomPostPagination
     
-    def get_social_queryset(self, search=None):
+    def get_public_posts_queryset(self, search=None):
         """
         Get base queryset with annotations for likes, user comparison
 
         Returns:
-            QuerySet: Annotated UserPost queryset
+            QuerySet: Annotated UserPost queryset to delete own posts if not admin on search page
         """
         base_queryset = models.UserPost.objects.annotate(
             likes_count=Coalesce(Count('likes', distinct=True), Value(0)),
@@ -191,12 +191,12 @@ class SocialPostsAPIView(APIView):
 
         return base_queryset.filter(post_desc__icontains=search) if search else base_queryset
     
-    def get_user_queryset(self, search=None):
+    def get_user_dashboard_queryset(self, search=None):
         """
         Get queryset filtered to current user's posts with annotations
 
         Returns:
-            QuerySet: Annotated UserPost queryset for current user
+            QuerySet: Annotated UserPost queryset for current user to delete own posts if not admin on search page
         """
         base_queryset = models.UserPost.objects.filter(
             user=self.request.user
@@ -210,6 +210,9 @@ class SocialPostsAPIView(APIView):
         ).select_related('user').prefetch_related('comments__user', 'likes')
 
         return base_queryset.filter(post_desc__icontains=search) if search else base_queryset
+
+    def get_dashboard_information(self):
+        pass
 
     def get(self, request):
         """
@@ -241,9 +244,9 @@ class SocialPostsAPIView(APIView):
         post_type = request.query_params.get('post_type', '')
         search = request.query_params.get('search_text', None)
         if post_type == "user":
-            queryset = self.get_user_queryset(search)
+            queryset = self.get_user_dashboard_queryset(search)
         else:
-            queryset = self.get_social_queryset()
+            queryset = self.get_public_posts_queryset()
 
         # Apply search filter if provided
         search_query = request.query_params.get('search', None)
@@ -294,19 +297,18 @@ class SocialPostsAPIView(APIView):
             post_data['comments'] = comments_dict.get(post_data['id'], [])
             posts_with_comments.append(post_data)
 
-        # Check if user is admin
-        if post_type == "user":
-            permissionToDelete = False
-        else:
-            permissionToDelete = request.user.get_user_role() == "admin"
-
         # Build response
         response_data = {
             "socialPosts": posts_with_comments,
-            "permissionToDelete": permissionToDelete,
             "userLikedPosts": liked_posts,
             "userComments": dict(comments_dict)
         }
+
+        # Check if user is admin
+        if post_type == "user":
+            response_data["permissionToDelete"] = False
+        else:
+            response_data["permissionToDelete"] = request.user.get_user_role() == "admin"
 
         # Return paginated response
         return paginator.get_paginated_response(response_data)
@@ -647,18 +649,6 @@ class PostsLike(APIView):
         return Response(status=Config.success)
 
 
-# class PostsComment(APIView):
-#     authentication_classes = [JWTAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#     queryset = UserComment.objects.all()
-
-#     def post(self, request, id):
-#         post_data = request.data
-#         post = UserPost.objects.filter(id = id).first()
-#         comment = self.queryset.create(user = request.user, comment=post_data["comment"], post=post)
-#         comment.save()
-#         return Response(status=Config.success)
-
 class PostsComment(APIView):
     """
     View to handle the creation of comments on a specific post.
@@ -731,15 +721,6 @@ class SearchUsersPosts(generics.ListAPIView):
                 "profile_image"
             )
         )
-
-        # # Pass search_text as query parameter
-        # fetch_social_posts = FetchSocialPosts()
-        # request_with_search = self.request
-        # request_with_search._request.GET = request_with_search._request.GET.copy()
-        # request_with_search._request.GET['search'] = search_text
-
-        # # Call with correct signature: only request parameter
-        # posts = fetch_social_posts.get(request=request_with_search)
 
         # Call SocialPostsAPIView directly with modified request
         social_posts_view = SocialPostsAPIView()

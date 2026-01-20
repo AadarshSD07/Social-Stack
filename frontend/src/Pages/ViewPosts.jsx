@@ -41,20 +41,18 @@ export default function ViewPosts() {
 
   return (
     <>
-    <div className='mt-4 pb-5'>
-      <h3 className='fs-3 text-center'>All Posts</h3>
-      <Posts
-        pageTitle={"viewposts"}
-        postEditingPermission={postEditingPermission}
-        getPostsData={getPostsData}
-        permissionToDelete={permissionToDelete}
-        loading={loading}
-        setLoading={setLoading}
-        error={error}
-        setError={setError}
-        pagination={[prevUrl, nextUrl]}
-      />
-    </div>
+    <h3 className='mt-4 fs-3 text-center'>All Posts</h3>
+    <Posts
+      pageTitle={"viewposts"}
+      postEditingPermission={postEditingPermission}
+      getPostsData={getPostsData}
+      permissionToDelete={permissionToDelete}
+      loading={loading}
+      setLoading={setLoading}
+      error={error}
+      setError={setError}
+      pagination={[prevUrl, nextUrl]}
+    />
     </>
   )
 }
