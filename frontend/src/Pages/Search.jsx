@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation} from 'react-router-dom';
 import axios from "axios";
 import Posts from "./Posts";
+import Profile from "./Profile";
 
 const Search = () => {
     const [error, setError] = useState(null);
@@ -75,6 +77,11 @@ const Search = () => {
 
     if (loading) return <div>Loading ...</div>;
     if (error) return <div>Error: {error}</div>;
+    const navigate = useNavigate();
+
+    const handleClick = (e) => {
+        navigate(`/dashboard/${e.target.id}`, { state: { onclick: true } });
+    };
 
     return (
         <>
@@ -119,7 +126,8 @@ const Search = () => {
                                         </div>
                                         <div className="username truncate-text">@{getHighlightedText(user.username)}</div>
                                     </div>
-                                    <button id={user.id} className='btn btn-primary'>Profile</button>
+                                    {/* <button id={user.id} className='btn btn-primary'>Profile</button> */}
+                                    <button id={user.id} className='btn btn-primary' onClick={handleClick}>profile</button>
                                 </div>
                             </div>
                         </div>

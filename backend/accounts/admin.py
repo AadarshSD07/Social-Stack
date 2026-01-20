@@ -2,11 +2,8 @@ from django.contrib import admin
 from accounts.models import User, Role
 # Register your models here.
 
-class AdminUserRole(admin.ModelAdmin):
-    list_display = ("user","role_name",)
+class AdminUser(admin.ModelAdmin):
+    list_display = ("id","username","role",)
 
-    def role_name(self, obj):
-        return obj.role.name
-
-admin.site.register(User)
+admin.site.register(User, AdminUser)
 admin.site.register(Role)

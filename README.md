@@ -18,6 +18,7 @@ A full-stack social media basic application built with Django backend and React 
 - View all posts from all users
 - Like and comment on posts
 - Search and filter posts
+- Navigate to other users’ profile pages (merged with dashboard) via search
 - Delete own posts
 
 ### 🛡️Admin Capabilities
@@ -26,12 +27,12 @@ A full-stack social media basic application built with Django backend and React 
 - Manage inappropriate or unfit content
 
 ### 📂Application Sections
-1. **Dashboard**: Displays the logged-in user's posts
+1. **Dashboard/User Profile**: Displays the logged-in user's posts and serves as the profile page for other users. Users can also search and navigate to other users’ dashboards.
 2. **View Posts**: Shows all posts from all users
-3. **Create Post**: Form to create new posts with description field and images field
+3. **Create Post**: Form to create new posts with description and image fields
 4. **Profile**: Form to update user details
-5. **Change Password**: Form to change password using previous password
-6. **Search**: Searches users and posts with descriptions that matches searched text
+5. **Change Password**: Form to change password using the previous password
+6. **Search**: Searches users and posts by keyword and allows navigation to user dashboards
 
 ## Tech Stack
 
@@ -130,26 +131,27 @@ npm start
 ### Social
 - `GET /social/posts/` – Get all posts
 - `POST /social/posts/` – Create a new post
-- `GET /social/user-posts/?post_type=user` – Get current user's posts
-- `DELETE /social/user-posts/:id/` – Delete a post (own posts for users, any post for admins)
+- `GET /social/dashboard/:id/` – Get a user’s dashboard (profile + posts)
+- `DELETE /social/posts/:id/` – Delete a post (own posts for users, any post for admins)
 - `POST /social/like/:id/` – Like a post
 - `POST /social/comment/:id/` – Comment on a post
-- `GET /social/search/:search_text/` – Search users and posts by keyword
+- `GET /social/search/<search_text>/` – Search users and posts by keyword, navigate to user dashboards
 
 ## 👥User Roles & Permissions
 
-| Action | User | Admin |
-|--------|------|-------|
-| Create Post | ✓ | ✓ |
-| View Own Posts | ✓ | ✓ |
-| View All Posts | ✓ | ✓ |
-| Edit Own Posts | ✓ | ✓ |
-| Delete Own Posts | ✓ | ✓ |
-| Delete Any Post | ✗ | ✓ |
+| Action            | User | Admin |
+|-------------------|------|-------|
+| Create Post       | ✓    | ✓     |
+| View Own Posts    | ✓    | ✓     |
+| View All Posts    | ✓    | ✓     |
+| Edit Own Posts    | ✓    | ✓     |
+| Delete Own Posts  | ✓    | ✓     |
+| Delete Any Post   | ✗    | ✓     |
+| Navigate to Other User Dashboards | ✓ | ✓ |
 
 ## 🔮Future Enhancements
 
-- Dedicated user profile pages
+- Dedicated user profile pages (expanded beyond dashboard)
 - Real-time notifications
 - Email verification
 

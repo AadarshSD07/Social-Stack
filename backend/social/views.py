@@ -13,118 +13,6 @@ from social import serializers, models
 
 import json
 
-class FetchSocialPosts(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = models.UserPost.objects.all()
-
-    def get(self, request, format=None):
-        if format:
-            total_posts = list(
-                self.queryset.annotate(
-                    created_at_str=Cast('created_at', CharField()),
-                    # Coalesce ensures that if Count is None, it returns 0
-                    likes_count=Coalesce(Count('likes'), Value(0)),
-                    same_user=Case(
-                        When(user__username=request.user.username, then=Value(True)),
-                        default=Value(False),
-                        output_field=BooleanField()
-                    )
-                ).filter(
-                    post_desc__icontains = format
-                ).values(
-                    "id",
-                    "imageurl",
-                    "user__username",
-                    "user__profile_image",
-                    "user__first_name",
-                    "user__last_name",
-                    "post_desc",
-                    "editedPost",
-                    "created_at_str",
-                    "likes_count",
-                    "same_user"
-                ).order_by("-created_at")
-            )
-        else:
-            total_posts = list(
-                self.queryset.annotate(
-                    created_at_str=Cast('created_at', CharField()),
-                    # Coalesce ensures that if Count is None, it returns 0
-                    likes_count=Coalesce(Count('likes'), Value(0)),
-                    same_user=Case(
-                        When(user__username=request.user.username, then=Value(True)),
-                        default=Value(False),
-                        output_field=BooleanField()
-                    )
-                ).values(
-                    "id",
-                    "imageurl",
-                    "user__username",
-                    "user__profile_image",
-                    "user__first_name",
-                    "user__last_name",
-                    "post_desc",
-                    "editedPost",
-                    "created_at_str",
-                    "likes_count",
-                    "same_user"
-                ).order_by("-created_at")
-            )
-        # liked_posts = list(PostLike.objects.filter(user=request.user).values_list("post__id", flat=True))
-        liked_posts = list(
-            models.PostLike.objects.filter(
-                user=request.user,
-                post__id__in = [pst["id"] for pst in total_posts]
-            ).values_list(
-                "post__id", flat=True
-            )
-        )
-        raw_comments = list(
-            models.UserComment.objects.annotate(
-                created_at_str=Cast('created_at', CharField()),
-            ).filter(
-                post__id__in=[pst["id"] for pst in total_posts]
-            ).values(
-                "id",
-                "user__first_name",
-                "user__last_name",
-                "user__profile_image",
-                "post__id",
-                "comment",
-                "created_at_str"
-            ).order_by("-created_at")
-        )
-        comments_dict = defaultdict(list)
-        for comm in raw_comments:
-            comments_dict[comm["post__id"]].append({
-                "id": comm["id"],
-                "user": comm["user__first_name"] + " " + comm["user__last_name"],
-                "user_image":f'/media/{comm["user__profile_image"]}',
-                "comment": comm["comment"],
-                "timestamp": comm["created_at_str"]
-            })
-        is_user_admin = request.user.get_user_role() == "admin"
-        return {
-            "socialPosts": total_posts,
-            "permissionToDelete": is_user_admin,
-            "userLikedPosts": liked_posts,
-            "userComments": comments_dict
-        }
-
-    def delete(self, request):
-        deleteId = request.data["postId"]
-        if request.user.get_user_role() == "admin":
-            post = self.queryset.filter(id = deleteId)
-            if post.exists():
-                post.delete()
-                return Response("Success", status=Config.success)
-            else:
-                return Response(status=Config.no_content)
-        else:
-            return Response("Failure", status=Config.unauthorized)
-
-
 class CustomPostPagination(PageNumberPagination):
     """
     Custom pagination for posts
@@ -188,18 +76,24 @@ class SocialPostsAPIView(APIView):
                 output_field=BooleanField()
             )
         ).select_related('user').prefetch_related('comments__user', 'likes')
-
+        
         return base_queryset.filter(post_desc__icontains=search) if search else base_queryset
     
-    def get_user_dashboard_queryset(self, search=None):
+    def get_user_dashboard_queryset(self):
         """
         Get queryset filtered to current user's posts with annotations
 
         Returns:
             QuerySet: Annotated UserPost queryset for current user to delete own posts if not admin on search page
         """
-        base_queryset = models.UserPost.objects.filter(
-            user=self.request.user
+        user_id = self.request.query_params.get('user_id', False)
+        if user_id:
+            filters = {"user__id": user_id}
+        else:
+            filters = {"user": self.request.user}
+
+        return models.UserPost.objects.filter(
+            **filters
         ).annotate(
             likes_count=Coalesce(Count('likes', distinct=True), Value(0)),
             same_user=Case(
@@ -209,10 +103,16 @@ class SocialPostsAPIView(APIView):
             )
         ).select_related('user').prefetch_related('comments__user', 'likes')
 
-        return base_queryset.filter(post_desc__icontains=search) if search else base_queryset
-
     def get_dashboard_information(self):
-        pass
+        user_id = self.request.query_params.get('user_id', False)
+        id = self.request.user.id if not user_id else user_id
+        user = User.objects.get(id = id)
+        return {
+            "userId": user.id,
+            "fullName": (user.first_name + " " + user.last_name)[:15],
+            "username": user.username,
+            "user_image": user.profile_image.url
+        }
 
     def get(self, request):
         """
@@ -243,10 +143,10 @@ class SocialPostsAPIView(APIView):
         # Get base queryset
         post_type = request.query_params.get('post_type', '')
         search = request.query_params.get('search_text', None)
-        if post_type == "user":
-            queryset = self.get_user_dashboard_queryset(search)
+        if post_type == "dashboard":
+            queryset = self.get_user_dashboard_queryset()
         else:
-            queryset = self.get_public_posts_queryset()
+            queryset = self.get_public_posts_queryset(search)
 
         # Apply search filter if provided
         search_query = request.query_params.get('search', None)
@@ -304,9 +204,10 @@ class SocialPostsAPIView(APIView):
             "userComments": dict(comments_dict)
         }
 
-        # Check if user is admin
-        if post_type == "user":
+        # Check if page is dashboard
+        if post_type == "dashboard":
             response_data["permissionToDelete"] = False
+            response_data["userDashboardInformation"] = self.get_dashboard_information()
         else:
             response_data["permissionToDelete"] = request.user.get_user_role() == "admin"
 
@@ -528,109 +429,23 @@ class SocialPostsAPIView(APIView):
             )
 
 
-class FetchUserPosts(APIView):
+class UserDashboard(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    queryset = models.UserPost.objects.all()
 
-    def get(self, request):
-        total_posts = list(
-            self.queryset.filter(user = request.user)
-            .annotate(
-                created_at_str=Cast('created_at', CharField()),
-                # Coalesce ensures that if Count is None, it returns 0
-                likes_count=Coalesce(Count('likes'), Value(0)),
-                same_user=Case(
-                        When(user__username=request.user.username, then=Value(True)),
-                        default=Value(False),
-                        output_field=BooleanField()
-                )
-            ).values(
-                "id",
-                "imageurl",
-                "user__username",
-                "user__profile_image",
-                "user__first_name",
-                "user__last_name",
-                "post_desc",
-                "editedPost",
-                "created_at_str",
-                "likes_count",
-                "same_user"
-            ).order_by("-created_at")
-        )
-        # liked_posts = list(PostLike.objects.filter(user=request.user).values_list("post__id", flat=True))
-        liked_posts = list(
-            models.PostLike.objects.filter(
-                user=request.user,
-                post__id__in = [pst["id"] for pst in total_posts]
-            ).values_list(
-                "post__id", flat=True
-            )
-        )
-        raw_comments = list(
-            models.UserComment.objects.annotate(
-                created_at_str=Cast('created_at', CharField()),
-            ).filter(
-                post__id__in=[pst["id"] for pst in total_posts]
-            ).values(
-                "id",
-                "user__first_name",
-                "user__last_name",
-                "user__profile_image",
-                "post__id",
-                "comment",
-                "created_at_str"
-            ).order_by("-created_at")
-        )
-        comments_dict = defaultdict(list)
-        for comm in raw_comments:
-            comments_dict[comm["post__id"]].append({
-                "id": comm["id"],
-                "user": comm["user__first_name"] + " " + comm["user__last_name"],
-                "user_image":f'/media/{comm["user__profile_image"]}',
-                "comment": comm["comment"],
-                "timestamp": comm["created_at_str"]
-            })
-        response = {
-            "socialPosts": total_posts,
-            "userLikedPosts": liked_posts,
-            "userComments": comments_dict
-        }
-        return Response(response, status=Config.success)
+    def get(self, request, id):
+        social_posts_view = SocialPostsAPIView()
+        social_posts_view.request = self.request
 
-    def post(self, request):
-        post_data = request.data
-        desc = post_data.get("desc")
-        image_url = post_data.get("imageUrl")
+        query_params = self.request._request.GET.copy()
+        query_params['post_type'] = 'dashboard'
+        query_params['page'] = '1'
+        query_params['page_size'] = '45'
+        query_params['user_id'] = id
 
-        # Use create() once with all required data
-        self.queryset.create(
-            user=request.user,
-            post_desc=desc,
-            imageurl=image_url # Django handles None/Null correctly if image_url is missing
-        )
-        return Response("Success", status=Config.success)
+        self.request._request.GET = query_params
 
-    def patch(self, request):
-        post_data = request.data
-        post = self.queryset.filter(id = post_data["postId"], user=request.user)
-        if post.exists():
-            userPost = post.first()
-            userPost.post_desc = post_data["editedComment"]
-            userPost.editedPost = True
-            userPost.save()
-            return Response({"message": "Post updated successfully!"},status=Config.success)
-        return Response({"message":"No post found for requested user!"}, status=Config.no_content)
-
-    def delete(self, request):
-        deleteId = request.data["postId"]
-        post = self.queryset.filter(id = deleteId, user=request.user.id)
-        if post.exists():
-            post.delete()
-            return Response("Success", status=Config.success)
-        else:
-            return Response(status=Config.no_content)
+        return social_posts_view.get(self.request)
 
 
 class PostsLike(APIView):

@@ -8,6 +8,7 @@ import Login from '../Pages/Login';
 import Profile from '../Pages/Profile';
 import Register from '../Pages/Register';
 import Search from '../Pages/Search';
+import UserProfile from '../Pages/UserProfile';
 import ViewPosts from '../Pages/ViewPosts';
 
 const NavbarWithRouter = (props) => {
@@ -82,6 +83,7 @@ const NavbarWithRouter = (props) => {
                         { props.getHeaderDetails ?
                             <nav className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <Link className="nav-link" to="/">👤Dashboard</Link>
+                                {/* <Link className="nav-link" to={`/dashboard/${props.getHeaderDetails.userId}`}>👤Dashboard</Link> */}
                                 <Link className="nav-link" to="/view-posts">📝View Posts</Link>
                                 <Link className="nav-link" to="/create-posts">➕Create Post</Link>
                                 <Link className="nav-link" to="/search">🔍Search</Link>
@@ -114,9 +116,16 @@ const NavbarWithRouter = (props) => {
                     </div>
                 </div>
             </nav>
-            <div className='page-content'>
+            <div className='page-content pb-5'>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    {/* <Route 
+                        path="/" 
+                        element={
+                            <Navigate to={`/dashboard/${getHeaderDetails.userId}`} replace />
+                        }
+                    /> */}
+                    <Route path="/dashboard/:userId" element={<UserProfile />} />
                     <Route path="/view-posts" element={<ViewPosts />} />
                     <Route path="/create-posts" element={<CreatePosts />} />
                     <Route path="/profile" element={<Profile />} />

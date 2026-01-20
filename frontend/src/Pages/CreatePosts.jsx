@@ -87,7 +87,7 @@ export default function CreatePosts() {
       <div className="w-75 mt-4 pb-5">
         <form onSubmit={Submit}>
           {statusMessage && (
-            <div className={`alert alert-${status}`} role="alert">
+            <div className={`alert alert-${status} mt-3`} role="alert">
                 {statusMessage}
             </div>
           )}

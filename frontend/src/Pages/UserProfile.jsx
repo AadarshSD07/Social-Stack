@@ -3,7 +3,7 @@ import axios from 'axios';
 import DashboardProfile from '../Components/DashboardProfile';
 import Posts from "./Posts";
 
-export default function Dashboard() {
+export default function UserProfile() {
   const [getPostsData, setGetPostsData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,8 @@ export default function Dashboard() {
   const [userInfo, setUserInfo] = useState({});
 
   const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
-  const backendUrl = `${backendDomain}/social/posts/?post_type=dashboard&page=1&page_size=45`;
+  let userDashboard = window.location.pathname.replace("/dashboard/", "");
+  let backendUrl = `${backendDomain}/social/dashboard/${userDashboard}/`;
   const postEditingPermission = true;
   const permissionToDelete = getPostsData ? getPostsData.permissionToDelete : false;
 
