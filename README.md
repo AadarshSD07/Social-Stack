@@ -1,6 +1,6 @@
 # 📱Social Media Project
 
-A full-stack social media basic application built with Django backend and React frontend, featuring JWT authentication and Role-Based Access Control (RBAC).
+A full-stack social media basic application built with Django backend and React frontend, featuring JWT authentication and Role-Based Access Control (RBAC). Now fully containerized with **Docker** for easy setup and deployment.
 
 ## ✨Features
 
@@ -27,14 +27,14 @@ A full-stack social media basic application built with Django backend and React 
 - Manage inappropriate or unfit content
 
 ### 📂Application Sections
-1. **Dashboard/User Profile**: Displays the logged-in user's posts and serves as the profile page for other users. Users can also search and navigate to other users’ dashboards.
-2. **View Posts**: Shows all posts from all users
-3. **Create Post**: Form to create new posts with description and image fields
-4. **Profile**: Form to update user details
-5. **Change Password**: Form to change password using the previous password
-6. **Search**: Searches users and posts by keyword and allows navigation to user dashboards
+1. **Dashboard/User Profile** – Displays the logged-in user's posts and serves as the profile page for other users.
+2. **View Posts** – Shows all posts from all users
+3. **Create Post** – Form to create new posts with description and image fields
+4. **Profile** – Form to update user details
+5. **Change Password** – Form to change password using the previous password
+6. **Search** – Searches users and posts by keyword and allows navigation to user dashboards
 
-## Tech Stack
+## 🛠️Tech Stack
 
 ### Backend
 - Django
@@ -46,21 +46,25 @@ A full-stack social media basic application built with Django backend and React 
 - React Router
 - Axios / Fetch
 
+### Deployment
+- Docker
+- Docker Compose
+
 ## 📁Project Structure
 
 ```
 project-root/
 ├── backend/          # Django backend application
 ├── frontend/         # React frontend application
+├── docker-compose.yml # Docker Compose configuration
 └── package.json      # Root package.json for concurrent server execution
 ```
 
 ## ⚙️Installation & Setup
 
 ### Prerequisites
-- Python 3.x
-- Node.js & npm
-- pip (Python package manager)
+- Docker
+- Docker Compose
 
 ### Steps
 
@@ -70,52 +74,36 @@ project-root/
    cd <project-directory>
    ```
 
-2. **Install root dependencies**
-   ```bash
-   npm install
-   ```
+2. **Build and run with Docker Compose**
+   - First-time build:
+     ```bash
+     docker-compose up --build
+     ```
+   - Subsequent runs:
+     ```bash
+     docker-compose up
+     ```
 
-3. **Backend Setup**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   python manage.py migrate
-   python manage.py createsuperuser  # Create admin user
-   ```
+This will start both the **Django backend** and **React frontend** containers automatically.
+- Backend: `http://localhost:8000`
+- Frontend: `http://localhost:3000` (or `http://localhost:5173` depending on config)
 
-4. **Frontend Setup**
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-## 🚀Running the Application
-
-### Development Mode
-
-From the root directory, run both servers concurrently:
-
-```bash
-npm run dev
-```
-
-This command will start:
-- Django backend server (typically on `http://localhost:8000`)
-- React frontend server (typically on `http://localhost:5143` or `http://localhost:3000`)
-
-### Running Servers Separately
-
-**Backend:**
-```bash
-cd backend
-python manage.py runserver
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm start
-```
+### Running Without Docker (Optional)
+If you prefer manual setup:
+- Backend:
+  ```bash
+  cd backend
+  pip install -r requirements.txt
+  python manage.py migrate
+  python manage.py createsuperuser
+  python manage.py runserver
+  ```
+- Frontend:
+  ```bash
+  cd frontend
+  npm install
+  npm start
+  ```
 
 ## 📡API Endpoints
 
@@ -139,24 +127,22 @@ npm start
 
 ## 👥User Roles & Permissions
 
-| Action            | User | Admin |
-|-------------------|------|-------|
-| Create Post       | ✓    | ✓     |
-| View Own Posts    | ✓    | ✓     |
-| View All Posts    | ✓    | ✓     |
-| Edit Own Posts    | ✓    | ✓     |
-| Delete Own Posts  | ✓    | ✓     |
-| Delete Any Post   | ✗    | ✓     |
-| Navigate to Other User Dashboards | ✓ | ✓ |
+| Action                          | User | Admin |
+|---------------------------------|------|-------|
+| Create Post                     | ✓    | ✓     |
+| View Own Posts                  | ✓    | ✓     |
+| View All Posts                  | ✓    | ✓     |
+| Edit Own Posts                  | ✓    | ✓     |
+| Delete Own Posts                | ✓    | ✓     |
+| Delete Any Post                 | ✗    | ✓     |
+| Navigate to Other User Dashboards | ✓  | ✓     |
 
 ## 🔮Future Enhancements
-
 - Dedicated user profile pages (expanded beyond dashboard)
 - Real-time notifications
 - Email verification
 
 ## 🤝Contributing
-
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
@@ -164,9 +150,7 @@ npm start
 5. Open a Pull Request
 
 ## 📜License
-
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 📬Contact
-
 For questions or support, please open an issue in the repository.
