@@ -315,6 +315,10 @@ height: calc(100% - 73px);
   background-color: #0c58c2;
 }
 
+.profileView {
+  cursor: pointer;
+}
+
 @media (max-width: 450px) {
   .truncate-text {
     display: inline-block;

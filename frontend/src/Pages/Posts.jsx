@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { getTimeAgo } from '../Methods/TimestampCalculation';
 import PostEdit from '../Components/PostEdit';
@@ -9,6 +10,7 @@ const Posts = (props) => {
   const [statusMessage, setStatusMessage] = useState("");
   const [pagination, setPagination] = useState(props.pagination || null);
   const [socialPosts, setSocialPosts] = useState(props.paginatedDataResults?.socialPosts || []);
+  const [userProfileView, setUserProfileView] = useState(props.userProfileView);
 
   const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
   const backendUrl = `${backendDomain}/social/posts/`;
@@ -73,6 +75,11 @@ const Posts = (props) => {
     }
   };
 
+  const navigate = useNavigate();
+  const handleClick = (e) => {
+      navigate(`/dashboard/${e.target.id}`, { state: { onclick: true } });
+  };
+
   return (
     <>
     <div className="container">
@@ -94,7 +101,7 @@ const Posts = (props) => {
                     alt="Profile" className="avatar me-3"/>
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center">
-                      <h5 className="mb-0 fw-bold truncate-text">
+                      <h5 id={post.user_id} onClick={handleClick} className="profileView mb-0 fw-bold truncate-text">
                         {
                           post.first_name && post.last_name ?(
                             post.first_name + " " +post.last_name

@@ -225,7 +225,7 @@ class SocialPostsAPIView(APIView):
             comments_dict[comment_data['post_id']].append(comment_data)
 
         # Serialize posts
-        serializer = serializers.SocialPostSerializer(paginated_posts, many=True)
+        serializer = serializers.PostSerializer(paginated_posts, many=True)
 
         # Add comments to each post
         posts_with_comments = []

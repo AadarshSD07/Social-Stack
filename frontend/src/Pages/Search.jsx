@@ -74,13 +74,13 @@ const Search = () => {
         );
     };
 
-    if (loading) return <div>Loading ...</div>;
-    if (error) return <div>Error: {error}</div>;
     const navigate = useNavigate();
-
     const handleClick = (e) => {
         navigate(`/dashboard/${e.target.id}`, { state: { onclick: true } });
     };
+
+    if (loading) return <div>Loading ...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <>
