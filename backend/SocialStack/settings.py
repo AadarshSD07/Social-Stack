@@ -146,11 +146,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:5173',
+CORS_ALLOWED_ORIGINS = [
     "https://social-stack.vercel.app"
-).split(',')
+]
+# CORS_ALLOWED_ORIGINS = os.getenv(
+#     'CORS_ALLOWED_ORIGINS'
+# ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
 
