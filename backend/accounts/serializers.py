@@ -113,7 +113,7 @@ class ProfileInformationSerializer(serializers.Serializer):
 
             # Handle special case for imageUrl
             elif field_name == 'imageUrl':
-                default_image = "/media/user_profile_images/default-user-image.png"
+                default_image = "/static/user_profile_images/default-user-image.png"
                 try:
                     # Get the profile image if exists
                     if user_instance.profile_image:

@@ -31,7 +31,7 @@ class CommentSerializer(serializers.ModelSerializer):
         profile_image = obj.user.profile_image
         if profile_image:
             return f'/media/{profile_image}'
-        return '/media/user_profile_images/default-user-image.png'
+        return '/static/user_profile_images/default-user-image.png'
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -75,7 +75,7 @@ class PostSerializer(serializers.ModelSerializer):
         profile_image = obj.user.profile_image
         if profile_image:
             return f'/media/{profile_image}'
-        return '/media/user_profile_images/default-user-image.png'
+        return '/static/user_profile_images/default-user-image.png'
 
 
 class CreatePostSerializer(serializers.ModelSerializer):

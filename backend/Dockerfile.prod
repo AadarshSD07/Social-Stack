@@ -30,10 +30,8 @@ RUN chmod +x /entrypoint.sh
 # Copy project files
 COPY . .
 
-# Expose port 8000 for Django
-EXPOSE 8000
-
 # Set entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
 
-CMD ["sh", "-c", "gunicorn SocialStack.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+# Production command with Render's PORT variable
+CMD sh -c "gunicorn SocialStack.wsgi:application --bind 0.0.0.0:${PORT:-8000}"
