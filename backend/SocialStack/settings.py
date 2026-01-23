@@ -88,13 +88,13 @@ WSGI_APPLICATION = 'SocialStack.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DB", "social"),
-        'USER': os.getenv("POSTGRES_USER", "socialStack"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "social@123456"),
-        'HOST': os.getenv("POSTGRES_HOST", "db"),
-        'PORT': os.getenv("POSTGRES_PORT", "5432"),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": os.environ["POSTGRES_HOST"],
+        "PORT": os.environ["POSTGRES_PORT"],
     }
 }
 
@@ -148,13 +148,14 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    "https://social-stack.vercel.app"
 ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
 
 # Or allow all during development:
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 AUTH_USER_MODEL = "accounts.User"
 
