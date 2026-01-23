@@ -3,12 +3,18 @@ set -e
 
 echo "Waiting for PostgreSQL..."
 
-until PGPASSWORD=$POSTGRES_PASSWORD psql \
-  -h "$POSTGRES_HOST" \
-  -U "$POSTGRES_USER" \
-  -d "$POSTGRES_DB" \
-  -c '\q' >/dev/null 2>&1; do
-  echo "Postgres unavailable, waiting..."
+MAX_TRIES=30
+TRIES=0
+
+echo "Checking DB connectivity..."
+
+until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\q' >/dev/null 2>&1; do
+  TRIES=$((TRIES+1))
+  echo "Postgres unavailable ($TRIES/$MAX_TRIES)..."
+  if [ "$TRIES" -ge "$MAX_TRIES" ]; then
+    echo "DB not reachable, exiting."
+    exit 1
+  fi
   sleep 1
 done
 
