@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-1uu5l6_awe24lo^ffxc*xmkxfolz5_@%liilk)e)0(cd^i&#%2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend', '0.0.0.0', ".onrender.com", "social-stack.com"]
 
 
 # Application definition
@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'SocialStack.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB', default='social'),
-        'USER': config('POSTGRES_USER', default='socialStack'),
-        'PASSWORD': config('POSTGRES_PASSWORD', default='social@123456'),
-        'HOST': config('POSTGRES_HOST', default='db'),
-        'PORT': config('POSTGRES_PORT', default='5432'),
+        'NAME': os.getenv("POSTGRES_DB", "social"),
+        'USER': os.getenv("POSTGRES_USER", "socialStack"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD", "social@123456"),
+        'HOST': os.getenv("POSTGRES_HOST", "db"),
+        'PORT': os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 

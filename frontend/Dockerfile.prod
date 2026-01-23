@@ -1,0 +1,23 @@
+# Build stage
+FROM node:22-alpine AS build
+
+# Set work directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Serve stage
+FROM nginx:alpine
+
+# Copy the rest of the frontend code
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Expose port 5173 for React
+EXPOSE 5173
+
+# Start the React production server
+CMD ["nginx", "-g", "daemon off;"]
