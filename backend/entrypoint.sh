@@ -17,6 +17,9 @@ echo "Postgres is ready."
 echo "Running migrations..."
 python manage.py migrate --noinput
 
+echo "Collecting static files..."
+python manage.py collectstatic --noinput || true
+
 echo "Seeding roles and superuser..."
 python seed_roles_superuser.py || echo "Seed skipped"
 
