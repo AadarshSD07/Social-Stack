@@ -1,23 +1,24 @@
 #!/bin/bash
-
 set -e
 
-echo "Waiting for PostgreSQL to be ready..."
+echo "Waiting for PostgreSQL..."
 
-# Wait for PostgreSQL
-until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\q' 2>/dev/null; do
-  >&2 echo "PostgreSQL is unavailable - sleeping"
+until PGPASSWORD=$POSTGRES_PASSWORD psql \
+  -h "$POSTGRES_HOST" \
+  -U "$POSTGRES_USER" \
+  -d "$POSTGRES_DB" \
+  -c '\q' >/dev/null 2>&1; do
+  echo "Postgres unavailable, waiting..."
   sleep 1
 done
 
->&2 echo "PostgreSQL is up - executing command"
+echo "Postgres is ready."
 
-# Run migrations
 echo "Running migrations..."
 python manage.py migrate --noinput
 
-echo "Seeding roles..."
-python seed_roles.py
+echo "Seeding roles and superuser..."
+python seed_roles_superuser.py || echo "Seed skipped"
 
-echo "Starting server..."
+echo "Starting application..."
 exec "$@"

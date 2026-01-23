@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import django
+from accounts.models import User
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SocialStack.settings')
 django.setup()
@@ -20,5 +21,21 @@ def create_roles():
         else:
             print(f"Role {role.name} already exists")
 
+def create_superuser():
+    username = os.getenv("DJANGO_SUPERUSER_USERNAME")
+    password = os.getenv("DJANGO_SUPERUSER_PASSWORD")
+    email = os.getenv("DJANGO_SUPERUSER_EMAIL")
+
+    if not username or not password:
+        print("Superuser env vars not set. Skipping.")
+        return
+    
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username=username, password=password, email=email)
+        print("Superuser created.")
+    else:
+        print("Superuser already exists.")
+
 if __name__ == "__main__":
     create_roles()
+    create_superuser()
