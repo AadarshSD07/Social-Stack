@@ -3,12 +3,6 @@ set -e
 
 echo "Waiting for PostgreSQL..."
 
-echo "=== DB DEBUG START ==="
-echo "POSTGRES_HOST=$POSTGRES_HOST"
-echo "POSTGRES_DB=$POSTGRES_DB"
-echo "POSTGRES_USER=$POSTGRES_USER"
-echo "POSTGRES_PORT=$POSTGRES_PORT"
-
 echo "Checking psql availability..."
 psql --version || echo "psql NOT FOUND"
 
@@ -19,7 +13,6 @@ PGPASSWORD="$POSTGRES_PASSWORD" psql \
   -U "$POSTGRES_USER" \
   -d "$POSTGRES_DB" \
   -c "select 1;"
-echo "=== DB DEBUG END ==="
 
 echo "Postgres is ready."
 
