@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import os
 import django
-from accounts.models import User
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SocialStack.settings')
 django.setup()
 
-from accounts.models import Role
+from accounts.models import Role, User
 
 def create_roles():
     roles = [

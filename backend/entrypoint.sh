@@ -9,11 +9,6 @@ TRIES=0
 echo "Checking DB connectivity..."
 psql --version || echo "psql not installed!"
 
-echo "POSTGRES_HOST=$POSTGRES_HOST"
-echo "POSTGRES_DB=$POSTGRES_DB"
-echo "POSTGRES_USER=$POSTGRES_USER"
-echo "POSTGRES_PORT=$POSTGRES_PORT"
-
 until PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c '\q' >/dev/null 2>&1; do
   TRIES=$((TRIES+1))
   echo "Postgres unavailable ($TRIES/$MAX_TRIES)..."
