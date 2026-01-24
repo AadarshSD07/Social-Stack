@@ -142,7 +142,7 @@ const Search = () => {
                         <div className="post-container mt-3 shadow-lg" key={index}>
                             <div className="post-header2">
                                 <div className="d-flex align-items-center">
-                                    <img src={`${ user.imageUrl}`} alt="Profile" className="avatar me-3"/>
+                                    <img src={`${user.imageUrl}`} alt="Profile" className="avatar me-3"/>
                                     <div className="flex-grow-1">
                                         {
                                             user.first_name && user.last_name ? (
