@@ -62,7 +62,7 @@ const Register = () => {
             // Step 4: Redirect or update UI
             window.location.href = "/";
         } catch (err) {
-            setError("Invalid credentials");
+            setError(err.response.data);
         } finally {
             setLoading(false);
         }

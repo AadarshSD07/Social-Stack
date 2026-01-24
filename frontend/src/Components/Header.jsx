@@ -94,8 +94,14 @@ const NavbarWithRouter = (props) => {
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src={`${backendDomain}${props.getHeaderDetails.user_image}`} alt="User" className="avatar me-3"/>
-                                        {props.getHeaderDetails.fullName}
+                                        <img src={`${props.getHeaderDetails.user_image}`} alt="User" className="avatar me-3"/>
+                                        {
+                                            props.getHeaderDetails.fullName ? (
+                                                props.getHeaderDetails.fullName
+                                            ) : (
+                                                props.getHeaderDetails.username
+                                            )
+                                        }
                                     </a>
                                     <ul className="dropdown-menu">
                                         <li>

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 export default function Profile() {
+    const [status, setStatus] = useState("");
+    const [statusMessage, setStatusMessage] = useState("");
     const [email, setEmail] = useState("");
     const [firstname, setFirstname] = useState("");
     const [imageFile, setImageFile] = useState(null);
@@ -105,8 +107,9 @@ export default function Profile() {
             }
 
         } catch (err) {
-            alert(err);
-            console.log("Error with request");
+            setStatus("danger");
+            setStatusMessage(err.response.data);
+            console.log("Error with request: " + err);
         }
     }
 
@@ -120,6 +123,18 @@ export default function Profile() {
 
     return (
         <>
+        {statusMessage && (
+            <div className={`field-width alert alert-${status} mt-3`} role="alert">
+                <div dangerouslySetInnerHTML={{ __html: statusMessage }} />
+                <button 
+                        type="button" 
+                        className="btn-close" 
+                        data-bs-dismiss="alert" 
+                        aria-label="Close"
+                        onClick={handleClose}
+                    ></button>
+            </div>
+        )}
         <div className="post-container p-3 shadow-lg field-width mt-4 pb-5">
             <form onSubmit={Submit}>
                 <div className="row">
@@ -131,7 +146,7 @@ export default function Profile() {
                                         <img src={imagePreview} alt="Preview"
                                             className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg" />
                                     ) : imageUrl ? (
-                                        <img src={`${backendDomain}${imageUrl}`} alt="User"
+                                        <img src={`${imageUrl}`} alt="User"
                                             className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg" />
                                     ) : (
                                         <div className="avatar-profile bg-gray-200 flex items-center justify-center cursor-pointer">

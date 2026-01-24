@@ -9,17 +9,8 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
+from configuration import Config
 from datetime import timedelta
-from dotenv import load_dotenv
-from pathlib import Path
-import os
-
-# Load .env file (only works locally - Render ignores it)
-load_dotenv()  # Looks for .env in project root (same folder as manage.py)
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -28,10 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1uu5l6_awe24lo^ffxc*xmkxfolz5_@%liilk)e)0(cd^i&#%2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+DEBUG = Config.DEBUG_MODE
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend', '0.0.0.0', ".onrender.com", "social-stack.com"]
-
+ALLOWED_HOSTS = Config.ALLOWED_HOSTS
 
 # Application definition
 
@@ -45,7 +35,8 @@ INSTALLED_APPS = [
     "accounts",
     "social",
     "rest_framework",
-    "corsheaders"
+    "corsheaders",
+    "cloudinary"
 ]
 
 MIDDLEWARE = [
@@ -86,18 +77,18 @@ WSGI_APPLICATION = 'SocialStack.wsgi.application'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'NAME': Config.BASE_DIR / 'db.sqlite3',
 #     }
 # }
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER", "social_stack"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT", 5432),
+        "NAME": Config.postgres_db,
+        "USER": Config.postgres_user,
+        "PASSWORD": Config.postgres_password,
+        "HOST": Config.postgres_host,
+        "PORT": Config.postgres_port,
     }
 }
 
@@ -138,23 +129,16 @@ USE_TZ = True
 
 # Media files (User uploaded content)
 MEDIA_URL = '/media/'  # URL prefix for media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Local directory for media
+MEDIA_ROOT = Config.MEDIA_ROOT  # Local directory for media
 
 # Static files configuration
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATIC_ROOT = Config.STATIC_ROOT
+STATICFILES_DIRS = Config.STATICFILES_DIRS
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # CORS Configuration
-CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
-CORS_ALLOWED_ORIGINS = [o.strip() for o in CORS_ALLOWED_ORIGINS if o.strip()]
-
-# CORS_ALLOWED_ORIGINS = os.getenv(
-#     'CORS_ALLOWED_ORIGINS'
-# ).split(',')
+CORS_ALLOWED_ORIGINS = Config.CORS_ALLOWED_ORIGINS
 
 CORS_ALLOW_CREDENTIALS = True
 

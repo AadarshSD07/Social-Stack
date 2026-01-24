@@ -52,10 +52,7 @@ class User(AbstractUser):
         user.role = Role.objects.get(name='member')
         user.save()
     """
-    profile_image = models.ImageField(
-        upload_to="user_profile_images", 
-        default="user_profile_images/default-user-image.png"
-    )
+    profile_image = models.URLField(blank=True, null=True)
     role = models.ForeignKey(
         Role, 
         on_delete=models.PROTECT,  # Changed from CASCADE to prevent role deletion

@@ -100,21 +100,27 @@ const Posts = (props) => {
             <div className="post-container mt-4 shadow-lg" id={`div-${post.id}`} key={index}>
               <div className="post-header">
                 <div className="d-flex align-items-center">
-                  <img src={`${backendDomain}${ post.user_profile_image}`}
+                  <img src={`${post.user_profile_image}`}
                     alt="Profile" className="avatar me-3"/>
                   <div className="flex-grow-1">
-                    <div className="d-flex align-items-center">
-                      <h5 id={post.user_id} onClick={handleClick} className="profileView mb-0 fw-bold truncate-text">
-                        {
-                          post.first_name && post.last_name ?(
-                            post.first_name + " " +post.last_name
-                          )
-                          :
-                          "No fullname!"
-                        }
-                      </h5>
-                    </div>
-                    <div className="username truncate-text">@{post.username}</div>
+                    {post.first_name && post.last_name ? (
+                      <>
+                      <div className="d-flex align-items-center">
+                        <h5 id={post.user_id} onClick={handleClick} className="profileView mb-0 fw-bold truncate-text">
+                            {post.first_name + " " +post.last_name}
+                        </h5>
+                      </div>
+                      <div className="username truncate-text">@{post.username}</div>
+                      </>
+                    ) : (
+                      <>
+                      <div className="d-flex align-items-center">
+                        <h5 id={post.user_id} onClick={handleClick} className="profileView mb-0 fw-bold truncate-text">
+                            {post.username}
+                        </h5>
+                      </div>
+                      </>
+                    )}
                   </div>
                   { props.permissionToDelete || post.same_user ?
                     <button id={post.id} className='svgButton' onClick={deletePost}>
@@ -132,7 +138,7 @@ const Posts = (props) => {
                   post.imageurl ?
                     <div className="postImageContainer">
                       <img
-                        src={`${backendDomain}${post.imageurl}`}
+                        src={`${post.imageurl}`}
                         alt="Post Image"
                         className="postImage me-3"
                       />

@@ -61,7 +61,7 @@ def get_dashboard_information(request):
         "userId": user.id,
         "fullName": (user.first_name + " " + user.last_name)[:15],
         "username": user.username,
-        "user_image": user.profile_image.url
+        "user_image": user.profile_image if user.profile_image else f"{Config.backend_domain}{Config.default_image}"
     }
 
 def build_paginated_posts_response(request, queryset, response_data=None):
@@ -202,7 +202,7 @@ class SocialPostsAPIView(generics.ListCreateAPIView):
                     "post": {
                         "id": post.id,
                         "post_desc": post.post_desc,
-                        "imageurl": post.imageurl.url if post.imageurl else None,
+                        "imageurl": post.imageurl if post.imageurl else None,
                         "created_at": post.created_at
                     }
                 },

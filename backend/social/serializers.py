@@ -1,3 +1,5 @@
+from accounts.cloudinary import upload_image
+from configuration import Config
 from django.contrib.auth import get_user_model
 import logging
 from rest_framework import serializers
@@ -5,6 +7,7 @@ from social import models
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
+USER_POSTS = "user_posts"
 
 class SearchUsersPostsSerializer(serializers.Serializer):
     users = serializers.ListField(child=serializers.DictField())
@@ -31,7 +34,7 @@ class CommentSerializer(serializers.ModelSerializer):
         profile_image = obj.user.profile_image
         if profile_image:
             return f'/media/{profile_image}'
-        return '/static/user_profile_images/default-user-image.png'
+        return f"{Config.backend_domain}{Config.default_image}"
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -74,8 +77,8 @@ class PostSerializer(serializers.ModelSerializer):
         """
         profile_image = obj.user.profile_image
         if profile_image:
-            return f'/media/{profile_image}'
-        return '/static/user_profile_images/default-user-image.png'
+            return profile_image
+        return f"{Config.backend_domain}{Config.default_image}"
 
 
 class CreatePostSerializer(serializers.ModelSerializer):
@@ -95,11 +98,20 @@ class CreatePostSerializer(serializers.ModelSerializer):
         """
         # User is passed via context from the view
         user = self.context['request'].user
-        return models.UserPost.objects.create(
-            user=user,
-            post_desc=validated_data.get('post_desc'),
-            imageurl=validated_data.get('imageurl', None)
-        )
+
+        # Build filters dict
+        filters = {
+            "user": user,
+            "post_desc": validated_data.get('post_desc'),
+        }
+
+        # Handle image upload if provided
+        imageurl = validated_data.get('imageurl')
+        if imageurl:
+            cloud_image_info = upload_image(imageurl, "user_posts")
+            filters["imageurl"] = cloud_image_info["cloudinary_url"]
+
+        return models.UserPost.objects.create(**filters)
 
 
 class UpdatePostSerializer(serializers.Serializer):

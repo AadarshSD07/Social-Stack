@@ -1,9 +1,10 @@
-from rest_framework import serializers
+from accounts.cloudinary import upload_image
+from configuration import Config
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.exceptions import ValidationError
+from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 import logging
 
@@ -50,13 +51,13 @@ class UserRegistrationSerializer(serializers.Serializer):
         # automatically and is the standard practice in Django.
         if User.objects.filter(username=validated_data["username"]).exists():
             raise serializers.ValidationError({
-                "username": "User already exists with this username!"
+                "username": "A user with that username already exists."
             })
 
         # Check if email already exists
         if User.objects.filter(email=validated_data["email"]).exists():
             raise serializers.ValidationError({
-                "email": "User already exists with this email!"
+                "email": "A user with that email already exists."
             })
 
         # Hash the password
@@ -113,11 +114,11 @@ class ProfileInformationSerializer(serializers.Serializer):
 
             # Handle special case for imageUrl
             elif field_name == 'imageUrl':
-                default_image = "/static/user_profile_images/default-user-image.png"
+                default_image = f"{Config.backend_domain}{Config.default_image}"
                 try:
                     # Get the profile image if exists
                     if user_instance.profile_image:
-                        value = user_instance.profile_image.url
+                        value = user_instance.profile_image
                     else:
                         value = default_image
                 except (AttributeError, ObjectDoesNotExist) as e:
@@ -173,7 +174,9 @@ class ProfileInformationSerializer(serializers.Serializer):
             # Handle special fields
             if field_name == 'imageUrl':
                 try:
-                    user_instance.profile_image = value
+                    cloud_image_info = upload_image(value, "user_profile_images")
+                    cloudinary_url = cloud_image_info["cloudinary_url"]
+                    user_instance.profile_image = cloudinary_url
                     user_instance.save()
                     updated_fields.append(field_name)
                 except Exception as e:

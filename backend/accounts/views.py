@@ -53,7 +53,12 @@ class UserRegistration(generics.CreateAPIView):
         
         # Return validation errors on invalid data
         # ⚠️ BUG FIX: Should return serializer.errors with 400 status, not success
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        error_string = ""
+        for error in serializer.errors:
+            for err in serializer.errors[error]:
+                error_string += f"{error}: {err} <br>"
+    
+        return Response(error_string, status=Config.bad_request)
 
 
 class UserProfileInformation(generics.UpdateAPIView):
@@ -113,7 +118,11 @@ class UserProfileInformation(generics.UpdateAPIView):
             )
         
         # Return validation errors for invalid data
-        return Response(serializer.errors, status=Config.bad_request)
+        error_string = ""
+        for error in serializer.errors:
+            for err in serializer.errors[error]:
+                error_string += f"{error}: {err} <br>"
+        return Response(error_string, status=Config.bad_request)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
