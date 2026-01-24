@@ -142,17 +142,22 @@ const Search = () => {
                         <div className="post-container mt-3 shadow-lg" key={index}>
                             <div className="post-header2">
                                 <div className="d-flex align-items-center">
-                                    <img src={`${backendDomain}/media/${ user.profile_image}`} alt="Profile" className="avatar me-3"/>
+                                    <img src={`${ user.imageUrl}`} alt="Profile" className="avatar me-3"/>
                                     <div className="flex-grow-1">
-                                        <div className="d-flex align-items-center">
-                                            {
-                                            user.first_name && user.last_name ?
-                                                <h5 className="mb-0 fw-bold truncate-text">{getHighlightedText(user.first_name)} {getHighlightedText(user.last_name)}</h5>
+                                        {
+                                            user.first_name && user.last_name ? (
+                                                <>
+                                                <div className="d-flex align-items-center">
+                                                    <h5 className="mb-0 fw-bold truncate-text">{getHighlightedText(user.first_name)} {getHighlightedText(user.last_name)}</h5>
+                                                </div>
+                                                <div className="username truncate-text">@{getHighlightedText(user.username)}</div>
+                                                </>
+                                            )
                                             :
-                                                "No fullname!"
+                                                <div className="d-flex align-items-center">
+                                                    <h5 className="mb-0 fw-bold truncate-text">{getHighlightedText(user.username)}</h5>
+                                                </div>
                                             }
-                                        </div>
-                                        <div className="username truncate-text">@{getHighlightedText(user.username)}</div>
                                     </div>
                                     {/* <button id={user.id} className='btn btn-primary'>Profile</button> */}
                                     <button id={user.id} className='btn btn-primary' onClick={handleClick}>profile</button>

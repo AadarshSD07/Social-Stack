@@ -378,13 +378,16 @@ class SearchUsersPosts(APIView):
 
     def get_users_queryset(self, search_text):
         """Finds up to 10 users whose name or username matches the search string."""
+        default_image = f"{Config.backend_domain}{Config.default_image}"
         users = list(
             User.objects.filter(
                 Q(username__icontains=search_text) |
                 Q(first_name__icontains=search_text) |
                 Q(last_name__icontains=search_text)
+            ).annotate(
+                imageUrl=Coalesce('profile_image', Value(default_image))
             ).values(
-                "id", "first_name", "last_name", "username", "profile_image"
+                "id", "first_name", "last_name", "username", "imageUrl"
             )[:10]
         )
         return users
