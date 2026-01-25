@@ -58,7 +58,7 @@ def get_dashboard_information(request, user_id=None):
     user = User.objects.get(id = id)
     return {
         "userId": user.id,
-        "fullName": (user.first_name + " " + user.last_name)[:15],
+        "fullName": (user.first_name + " " + user.last_name),
         "username": user.username,
         "user_image": user.profile_image if user.profile_image else "",
         "email": user.email
@@ -388,7 +388,7 @@ class SearchUsersPosts(APIView):
                 imageUrl=Coalesce('profile_image', Value(default_image))
             ).values(
                 "id", "first_name", "last_name", "username", "imageUrl"
-            )[:10]
+            )
         )
         return users
 

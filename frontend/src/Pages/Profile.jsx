@@ -116,6 +116,10 @@ export default function Profile() {
 
         } catch (err) {
             setStatus("danger");
+            if (err.response.data.detail != undefined) {
+                setStatusMessage(err.response.data.detail);
+                console.log("Error with request: " + err);
+            }
             setStatusMessage(err.response.data);
             console.log("Error with request: " + err);
         }
@@ -134,13 +138,7 @@ export default function Profile() {
         {statusMessage && (
             <div className={`field-width alert alert-${status} mt-3`} role="alert">
                 <div dangerouslySetInnerHTML={{ __html: statusMessage }} />
-                <button 
-                        type="button" 
-                        className="btn-close" 
-                        data-bs-dismiss="alert" 
-                        aria-label="Close"
-                        onClick={handleClose}
-                    ></button>
+                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         )}
         <div className="post-container p-3 shadow-sm field-width mt-4">

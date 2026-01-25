@@ -751,6 +751,15 @@ height: calc(100% - 73px);
   color: var(--footer-bottom);
 }
 
+.truncate-text {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 22ch; 
+  vertical-align: middle;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .footer-top {
@@ -772,7 +781,7 @@ height: calc(100% - 73px);
     text-overflow: ellipsis;
 
     max-width: 6ch; 
-    vertical-align: bottom;
+    vertical-align: middle;
   }
 }
 

@@ -153,10 +153,10 @@ const NavbarWithRouter = (props) => {
                         <div className='d-flex'>
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle theme-text" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a className="truncate-text nav-link dropdown-toggle theme-text" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src={`${getHeaderDetails.user_image ? getHeaderDetails.user_image : defaultImage}`} alt="User" className="avatar me-3"/>
                                         {
-                                            getHeaderDetails.fullName ? (
+                                            getHeaderDetails.fullName?.trim() ? (
                                                 getHeaderDetails.fullName
                                             ) : (
                                                 getHeaderDetails.username
