@@ -218,7 +218,7 @@ export default function Profile() {
                 </div>
                 <div className="mb-3 row">
                     <div className="col">
-                        <button type="submit" className="btn btn-primary w-100" >
+                        <button type="submit" className="btn shadow w-100" >
                             Change
                         </button>
                     </div>

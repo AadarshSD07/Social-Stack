@@ -129,7 +129,7 @@ export default function CreatePosts() {
               placeholder='Write something...'
               required
             />
-          <button type="submit" className="btn btn-primary px-5 mt-4 shadow-sm">
+          <button type="submit" className="btn px-5 mt-4 shadow">
             Post
           </button>
           </div>

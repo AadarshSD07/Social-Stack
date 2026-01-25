@@ -99,7 +99,7 @@ const Posts = (props) => {
       ) : (
         socialPosts.map((post, index) => (
             <div className="post-container mt-4 shadow-sm" id={`div-${post.id}`} key={index}>
-              <div className="post-header">
+              <div className="post-header mb-3">
                 <div className="d-flex align-items-center">
                   <img src={`${post.user_profile_image ? post.user_profile_image : defaultImage}`}
                     alt="Profile" className="avatar me-3"/>

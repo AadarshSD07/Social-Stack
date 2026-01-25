@@ -7,6 +7,7 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [firstname, setFirstname] = useState("");
+    const [gender, setGender] = useState("O");
     const [lastname, setLastname] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -15,6 +16,8 @@ const Register = () => {
         e.preventDefault();
         setError("");
         setLoading(true);
+        let username = username.replace(" ","_");
+        setUsername(username);
 
         // Create FormData object
         const formData = new FormData();
@@ -25,6 +28,7 @@ const Register = () => {
         formData.append('first_name', firstname);
         formData.append('last_name', lastname);
         formData.append('password', password);
+        formData.append('gender', gender);
 
         try {
             // Step 1: Register the user
@@ -87,7 +91,7 @@ const Register = () => {
 
                 <div className="form-group mt-2">
                     <label className="fw-semibold" htmlFor="email">Email</label>
-                    <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control shadow-sm"
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control shadow-sm"
                         placeholder="email" id="email" minLength="3" maxLength="150" disabled={loading} required />
                 </div>
 
@@ -106,6 +110,18 @@ const Register = () => {
                         <input id="lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} className="form-control shadow-sm" 
                         type="text" placeholder="last name" required />
                     </div>
+                </div>
+
+                <div className="form-group mt-2">
+                    <label htmlFor="gender" className="fw-semibold form-label">
+                        Gender
+                    </label>
+                    <select name="gender" id="id_gender" className="form-control p-2 w-100"
+                        onChange={(e) => setGender(e.target.value)} defaultValue={"O"} required>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                    </select>
                 </div>
                 
                 <div className="form-group mt-2">

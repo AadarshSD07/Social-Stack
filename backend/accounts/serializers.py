@@ -36,6 +36,7 @@ class UserRegistrationSerializer(serializers.Serializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all(), message="A user with that email already exists.")]
     )
+    gender = serializers.CharField(required=True, max_length=1)
 
     def create(self, validated_data):
         """

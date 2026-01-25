@@ -11,7 +11,7 @@ const ErrorPage = ({ error, resetErrorBoundary }) => {
           </p>
           <div className="d-flex gap-3 justify-content-center flex-wrap">
             <button 
-              className="btn btn-primary btn-lg" 
+              className="btn btn-lg" 
               onClick={resetErrorBoundary}
             >
               Try Again

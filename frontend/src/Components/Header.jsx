@@ -1,5 +1,6 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect , useContext, useRef} from 'react'
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation} from 'react-router-dom';
+import { ThemeContext } from '../ThemeContext';
 import axios from "axios";
 import ChangePassword from "../Pages/ChangePassword";
 import CreatePosts from '../Pages/CreatePosts';
@@ -13,7 +14,10 @@ import UserProfile from '../Pages/UserProfile';
 import ViewPosts from '../Pages/ViewPosts';
 
 const NavbarWithRouter = (props) => {
+    const { theme, applyThemeWithTransition } = useContext(ThemeContext);
     const [getHeaderDetails, setHeaderDetails] = useState([]);
+    const thumbRef = useRef(null);
+
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
     const defaultImage = `${backendDomain}/static/user_profile_images/default-user-image.png`;
     const fetchLocation = useLocation();
@@ -39,6 +43,12 @@ const NavbarWithRouter = (props) => {
         userDetails();
     }, []);
 
+    const onToggle = (e) => {
+        const nextTheme = theme === "light" ? "dark" : "light";
+        applyThemeWithTransition(nextTheme, thumbRef.current);
+    };
+
+
     if (!props.isAuthenticated) {
         if (!["/register","/login","/"].includes(fetchLocation.pathname)) {
             localStorage.setItem("redirectPath", fetchLocation.pathname);
@@ -47,7 +57,7 @@ const NavbarWithRouter = (props) => {
 
         return (
             <>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary">
+            <nav className="navbar navbar-expand-lg bg-header">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="/">
                         <img src={`${backendDomain}/static/logo/SSLNewShortSVG.png`}
@@ -60,6 +70,19 @@ const NavbarWithRouter = (props) => {
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <span></span>
                         </ul>
+                        <label className="ccs-toggle me-3">
+                            <input
+                                id="theme-toggle"
+                                type="checkbox"
+                                className="toggle-checkbox"
+                                checked={theme === "light"}
+                                onChange={onToggle}
+                            />
+                            <span className="ccs-track">
+                                <span className="ccs-thumb">
+                                </span>
+                            </span>
+                        </label>
                         <div className='d-flex'>
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
@@ -91,7 +114,7 @@ const NavbarWithRouter = (props) => {
 
         return (
             <>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary">
+            <nav className="navbar navbar-expand-lg bg-header">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="/">
                         <img src={`${backendDomain}/static/logo/SSLNewShortSVG.png`}
@@ -106,18 +129,31 @@ const NavbarWithRouter = (props) => {
                         </ul>
                         { getHeaderDetails ?
                             <nav className="navbar-nav me-auto mb-2 mb-lg-0">
-                                <Link className="nav-link" to="/">👤Dashboard</Link>
+                                <Link className="nav-link theme-text" to="/">👤Dashboard</Link>
                                 {/* <Link className="nav-link" to={`/dashboard/${getHeaderDetails.userId}`}>👤Dashboard</Link> */}
-                                <Link className="nav-link" to="/view-posts">📝View Posts</Link>
-                                <Link className="nav-link" to="/create-posts">➕Create Post</Link>
-                                <Link className="nav-link" to="/search">🔍Search</Link>
+                                <Link className="nav-link theme-text" to="/view-posts">📝View Posts</Link>
+                                <Link className="nav-link theme-text" to="/create-posts">➕Create Post</Link>
+                                <Link className="nav-link theme-text" to="/search">🔍Search</Link>
                             </nav>
                             : ""
                         }
+                        <label className="ccs-toggle me-3">
+                            <input
+                                id="theme-toggle"
+                                type="checkbox"
+                                className="toggle-checkbox"
+                                checked={theme === "light"}
+                                onChange={onToggle}
+                            />
+                            <span className="ccs-track">
+                                <span className="ccs-thumb">
+                                </span>
+                            </span>
+                        </label>
                         <div className='d-flex'>
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a className="nav-link dropdown-toggle theme-text" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <img src={`${getHeaderDetails.user_image ? getHeaderDetails.user_image : defaultImage}`} alt="User" className="avatar me-3"/>
                                         {
                                             getHeaderDetails.fullName ? (
@@ -134,7 +170,6 @@ const NavbarWithRouter = (props) => {
                                         <li>
                                             <Link className="dropdown-item" to="/change-password">🗝️Change Password</Link>
                                         </li>
-                                        <li><hr className="dropdown-divider"/></li>
                                         <li><a className="dropdown-item" href="#" onClick={() => props.logout()}>🚪{"Logout"}</a></li>
                                     </ul>
                                 </li>

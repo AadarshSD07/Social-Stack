@@ -60,6 +60,30 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
+    # Gender Options
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+
+    # Theme Options
+    THEME_CHOICES = [
+        ('light', 'Light Mode'),
+        ('dark', 'Dark Mode'),
+    ]
+
+    gender = models.CharField(
+        max_length=1,
+        choices=GENDER_CHOICES,
+        default='O'
+    )
+
+    theme = models.CharField(
+        max_length=10,
+        choices=THEME_CHOICES,
+        default='light'
+    )
 
     class Meta:
         """Model metadata for admin interface and database."""

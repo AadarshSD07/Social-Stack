@@ -69,7 +69,7 @@ export default function ChangePassword() {
                 <input id="npassword" value={npassword} onChange={(e) => setNPassword(e.target.value)} className="form-control shadow-sm" 
                  type="password" placeholder="password" />
             </div>
-            <button type="submit" className="btn btn-primary shadow px-5">
+            <button type="submit" className="btn shadow px-5">
                 Change
             </button>
             </form>

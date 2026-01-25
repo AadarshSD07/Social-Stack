@@ -129,7 +129,7 @@ const Search = () => {
                 <div className="flex-grow-1">
                     <p className="form-label fs-3">Users</p>
                 </div>
-                <p className="form-label fs-6 text-primary">
+                <p className="form-label fs-6 url-link">
                     {searchedUsers.length > 0 && `${searchedUsers.length} search${searchedUsers.length > 1 ? 'es' : ''}`}
                 </p>
             </div>
@@ -160,8 +160,7 @@ const Search = () => {
                                                 </div>
                                             }
                                     </div>
-                                    {/* <button id={user.id} className='btn btn-primary'>Profile</button> */}
-                                    <button id={user.id} className='btn btn-primary' onClick={handleClick}>profile</button>
+                                    <button id={user.id} className='btn' onClick={handleClick}>profile</button>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +174,7 @@ const Search = () => {
                 <div className="flex-grow-1">
                     <p className="form-label fs-3">Posts</p>
                 </div>
-                <p className="form-label fs-6 text-primary">
+                <p className="form-label fs-6 url-link">
                     {paginatedData.count > 0 && `${paginatedData.count} search${paginatedData.count > 1 ? 'es' : ''}`}
                 </p>
             </div>
