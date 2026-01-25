@@ -16,6 +16,8 @@ export default function Profile() {
     const fileInputRef = useRef(null);
 
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
+    const defaultImage = `${backendDomain}/static/user_profile_images/default-user-image.png`;
+
     useEffect(() => {
         const fetchUserDetails = async () => {
             const config = {
@@ -48,6 +50,12 @@ export default function Profile() {
         }
         fetchUserDetails();
     }, []);
+
+    const handleImageClick = () => {
+        setImageFile(null);
+        setImagePreview('');
+        fileInputRef.current.value = '';
+    }
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -135,7 +143,7 @@ export default function Profile() {
                     ></button>
             </div>
         )}
-        <div className="post-container p-3 shadow-lg field-width mt-4 pb-5">
+        <div className="post-container p-3 shadow-sm field-width mt-4">
             <form onSubmit={Submit}>
                 <div className="row">
                     <div className="col">
@@ -144,19 +152,18 @@ export default function Profile() {
                                 <div className="relative group d-flex justify-content-center mx-auto" onClick={handleAvatarClick}>
                                     {imagePreview ? (
                                         <img src={imagePreview} alt="Preview"
-                                            className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg" />
+                                            className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm" />
                                     ) : imageUrl ? (
                                         <img src={`${imageUrl}`} alt="User"
-                                            className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg" />
+                                            className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm" />
                                     ) : (
-                                        <div className="avatar-profile bg-gray-200 flex items-center justify-center cursor-pointer">
-                                            <span className="text-gray-500">No Image</span>
-                                        </div>
+                                        <img src={`${defaultImage}`} alt="User"
+                                            className="avatar-profile w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm" />
                                     )}
                                 </div>
 
                                 <div className="d-flex justify-content-center mx-auto">
-                                    <input id="user_image" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden ps-2 mt-4" />
+                                    <input id="user_image" type="file" ref={fileInputRef} onClick={handleImageClick} onChange={handleImageChange} accept="image/*" className="hidden ps-2 mt-4" />
                                 </div>
                             </div>
 
@@ -169,8 +176,8 @@ export default function Profile() {
                                 </div>
                             )}
 
-                            <p className="text-sm text-gray-500 mt-2 d-flex justify-content-center mt-4 w-100 mx-auto">
-                                Click the image to upload a new profile picture
+                            <p className="text-sm text-gray-500">
+                                Click to upload a new profile picture. Note: This will replace your current image.
                             </p>
                         </div>
                     </div>

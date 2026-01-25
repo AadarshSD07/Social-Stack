@@ -4,6 +4,7 @@ import axios from "axios";
 import ChangePassword from "../Pages/ChangePassword";
 import CreatePosts from '../Pages/CreatePosts';
 import Dashboard from '../Pages/Dashboard';
+import Footer from './Footer';
 import Login from '../Pages/Login';
 import Profile from '../Pages/Profile';
 import Register from '../Pages/Register';
@@ -12,8 +13,31 @@ import UserProfile from '../Pages/UserProfile';
 import ViewPosts from '../Pages/ViewPosts';
 
 const NavbarWithRouter = (props) => {
+    const [getHeaderDetails, setHeaderDetails] = useState([]);
     const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
+    const defaultImage = `${backendDomain}/static/user_profile_images/default-user-image.png`;
     const fetchLocation = useLocation();
+
+    useEffect(() => {
+        const userDetails = async () => {
+            if (props.isAuthenticated) {
+                const config = {
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("access")}`,
+                        "Content-Type": "application/json"
+                    }
+                };
+                try {
+                    const response = await axios.get(`${backendDomain}/header/`, config);
+                    setHeaderDetails(response.data);
+                } catch (err) {
+                    console.error('Error:', err);
+                }
+            }
+        };
+
+        userDetails();
+    }, []);
 
     if (!props.isAuthenticated) {
         if (!["/register","/login","/"].includes(fetchLocation.pathname)) {
@@ -80,10 +104,10 @@ const NavbarWithRouter = (props) => {
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <span></span>
                         </ul>
-                        { props.getHeaderDetails ?
+                        { getHeaderDetails ?
                             <nav className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <Link className="nav-link" to="/">👤Dashboard</Link>
-                                {/* <Link className="nav-link" to={`/dashboard/${props.getHeaderDetails.userId}`}>👤Dashboard</Link> */}
+                                {/* <Link className="nav-link" to={`/dashboard/${getHeaderDetails.userId}`}>👤Dashboard</Link> */}
                                 <Link className="nav-link" to="/view-posts">📝View Posts</Link>
                                 <Link className="nav-link" to="/create-posts">➕Create Post</Link>
                                 <Link className="nav-link" to="/search">🔍Search</Link>
@@ -94,12 +118,12 @@ const NavbarWithRouter = (props) => {
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src={`${props.getHeaderDetails.user_image}`} alt="User" className="avatar me-3"/>
+                                        <img src={`${getHeaderDetails.user_image ? getHeaderDetails.user_image : defaultImage}`} alt="User" className="avatar me-3"/>
                                         {
-                                            props.getHeaderDetails.fullName ? (
-                                                props.getHeaderDetails.fullName
+                                            getHeaderDetails.fullName ? (
+                                                getHeaderDetails.fullName
                                             ) : (
-                                                props.getHeaderDetails.username
+                                                getHeaderDetails.username
                                             )
                                         }
                                     </a>
@@ -139,6 +163,7 @@ const NavbarWithRouter = (props) => {
                     <Route path="/search" element={<Search />} />
                 </Routes>
             </div>
+            < Footer />
             </>
         )
     }
@@ -146,33 +171,10 @@ const NavbarWithRouter = (props) => {
 
 
 export default function Header(props) {
-    const [getHeaderDetails, setHeaderDetails] = useState([]);
-    const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
-
-    useEffect(() => {
-        const userDetails = async () => {
-            const config = {
-                headers: {
-                    "Authorization": `Bearer ${localStorage.getItem("access")}`,
-                    "Content-Type": "application/json"
-                }
-            };
-            try {
-                const response = await axios.get(`${backendDomain}/header/`, config);
-                setHeaderDetails(response.data);
-            } catch (err) {
-                console.error('Error:', err);
-            }
-        };
-
-        userDetails();
-    }, []);
-
     return (
         <>
         <BrowserRouter>
             <NavbarWithRouter
-                getHeaderDetails={getHeaderDetails}
                 isAuthenticated={props.isAuthenticated}
                 logout={props.logout}
             />

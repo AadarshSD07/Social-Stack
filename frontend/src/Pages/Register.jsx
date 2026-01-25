@@ -70,7 +70,7 @@ const Register = () => {
 
     return (
         <>
-        <div className='post-container p-3 shadow-lg field-width mt-4 pb-5'>
+        <div className='post-container p-3 shadow-sm field-width mt-4 pb-5'>
             <h1 className="text-center pt-4 fs-1">Register</h1>
             <form onSubmit={handleSubmit}>
                 {error && (
@@ -116,7 +116,7 @@ const Register = () => {
                     <small className="form-text text-muted">Password must be at least 8 characters long.</small>
                 </div>
                 
-                <div className="d-flex justify-content-center mt-4 w-50 mx-auto">
+                <div className="d-flex justify-content-center mt-4 mx-auto">
                     <button type="submit" className="register-button shadow mt-2" disabled={loading}>
                         {loading ? 'SIGNING UP...' : 'SIGN UP'}
                     </button>

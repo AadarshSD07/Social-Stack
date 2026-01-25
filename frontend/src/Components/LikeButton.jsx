@@ -13,6 +13,7 @@ const SocialPost = (props) => {
 
   let commentsLength = comments ? comments.length : 0;
   const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
+  const defaultImage = `${backendDomain}/static/user_profile_images/default-user-image.png`;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -147,7 +148,7 @@ const SocialPost = (props) => {
       {showComments && (
         <div className="comments-section">
           <div className="comment-form">
-            <img src={`${backendDomain}${userInformation["user_image"]}`} alt="Your avatar" className="comment-avatar"/>
+            <img src={`${userInformation["user_image"] ? userInformation["user_image"] : defaultImage}`} alt="Your avatar" className="comment-avatar"/>
             <input type="text" placeholder="Write a comment..." value={newComment}
               onChange={(e) => setNewComment(e.target.value)} className="comment-input"
               onKeyDown={(e) => {
@@ -166,7 +167,7 @@ const SocialPost = (props) => {
             ) : (
               comments.map((comment) => (
                 <div key={comment.id} className="comment-item">
-                  <img src={`${backendDomain}${comment.user_image}`} alt={comment.user} className="comment-avatar"/>
+                  <img src={`${comment.user_image ? comment.user_image : defaultImage }`} alt={comment.user} className="comment-avatar"/>
                   <div className="comment-content">
                     <div className="comment-header">
                       <span className="comment-user">{comment.user}</span>

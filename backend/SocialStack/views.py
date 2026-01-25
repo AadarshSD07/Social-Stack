@@ -89,7 +89,7 @@ class HeaderDetails(APIView):
                 "userId": request.user.id,
                 "fullName": f"{request.user.first_name} {request.user.last_name}"[:15].strip(),
                 "username": request.user.username,
-                "user_image": request.user.profile_image if request.user.profile_image else f"{Config.default_image}"
+                "user_image": request.user.profile_image if request.user.profile_image else ""
             }
         else:
             # Return empty object for anonymous users

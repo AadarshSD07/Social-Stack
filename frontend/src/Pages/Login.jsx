@@ -29,7 +29,7 @@ const Login = () => {
       window.location.href = redirectPath ? redirectPath: "/";
 
     } catch (err) {
-      setError("Invalid credentials");
+      setError(err.response.data.detail);
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ const Login = () => {
 
   return (
     <>
-    <div className='post-container p-3 shadow-lg field-width mt-4 pb-5'>
+    <div className='post-container p-3 shadow-sm field-width mt-4 pb-5'>
       <p className="text-center pt-4 fs-1">Login</p>
       <form onSubmit={handleSubmit}>
         {error && (
@@ -59,7 +59,7 @@ const Login = () => {
           <small className="form-text text-muted">Password must be at least 8 characters long.</small>
         </div>
         
-        <div className="d-flex justify-content-center mt-4 w-25 mx-auto">
+        <div className="d-flex justify-content-center mt-4 mx-auto">
           <button type="submit" className="login-button shadow mt-2" disabled={loading}>
             {loading ? 'SIGNING IN...' : 'SIGN IN'}
           </button>

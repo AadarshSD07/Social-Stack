@@ -60,7 +60,8 @@ def get_dashboard_information(request, user_id=None):
         "userId": user.id,
         "fullName": (user.first_name + " " + user.last_name)[:15],
         "username": user.username,
-        "user_image": user.profile_image if user.profile_image else f"{Config.default_image}"
+        "user_image": user.profile_image if user.profile_image else "",
+        "email": user.email
     }
 
 def build_paginated_posts_response(request, queryset, response_data=None):
@@ -377,7 +378,7 @@ class SearchUsersPosts(APIView):
 
     def get_users_queryset(self, search_text):
         """Finds up to 10 users whose name or username matches the search string."""
-        default_image = f"{Config.default_image}"
+        default_image = ""
         users = list(
             User.objects.filter(
                 Q(username__icontains=search_text) |

@@ -5,33 +5,38 @@ export default function CreatePosts() {
   const [desc, setDesc] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [status, setStatus] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const fileInputRef = useRef(null);
   const backendDomain = import.meta.env.VITE_BACKEND_DOMAIN;
 
-  const handleImageChange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-      setImageFile(file);
+  const handleImageClick = () => {
+    setImageFile(null);
+    setImagePreview('');
+    fileInputRef.current.value = '';
+  }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-          setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      }
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+    }
   };
 
   const handleAvatarClick = () => {
-      fileInputRef.current.click();
+    fileInputRef.current.click();
   };
 
   const handleImageRemoval = () => {
-      setImageFile(null);
-      setImagePreview('');
-      fileInputRef.current.value = '';
+    setImageFile(null);
+    setImagePreview('');
+    fileInputRef.current.value = '';
   }
 
   const Submit = async (e) => {
@@ -77,14 +82,14 @@ export default function CreatePosts() {
 
   return (
     <>
-      <div className="w-75 mt-4 pb-5">
+      <div className="w-75 mt-4">
         <form onSubmit={Submit}>
           {statusMessage && (
             <div className={`alert alert-${status} mt-3`} role="alert">
                 {statusMessage}
             </div>
           )}
-          <div className="post-container p-3 mb-3 shadow-lg">
+          <div className="post-container p-3 shadow-sm">
             <label htmlFor="desc" className="form-label fs-3">
               Create a New Post
             </label>
@@ -96,18 +101,13 @@ export default function CreatePosts() {
                           <img src={imagePreview} alt="Preview"
                               className="postImage me-3" />
                         </div>
-                    ) : imageUrl ? (
-                        <div className="postImageContainer" onClick={handleAvatarClick}>
-                          <img src={`${backendDomain}${imageUrl}`} alt="User"
-                              className="postImage me-3" />
-                        </div>
                     ) : (
                         <span></span>
                     )}
 
-                  <input id="user_image" type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
+                  <input id="user_image" type="file" ref={fileInputRef} onClick={handleImageClick} onChange={handleImageChange} accept="image/*" className="hidden" />
                   <p className="text-sm text-gray-500 mt-2">
-                      Click the image to upload a new profile picture
+                      Click to upload a new profile picture. Note: This will replace your current image.
                   </p>
               </div>
 
@@ -125,11 +125,11 @@ export default function CreatePosts() {
               id="desc" 
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
-              className="form-control shadow mt-3" 
+              className="form-control shadow-sm mt-3"
               placeholder='Write something...'
               required
             />
-          <button type="submit" className="btn btn-primary px-5 mt-4 shadow">
+          <button type="submit" className="btn btn-primary px-5 mt-4 shadow-sm">
             Post
           </button>
           </div>

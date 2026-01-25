@@ -48,7 +48,7 @@ export default function ChangePassword() {
 
     return (
         <>
-        <div className="post-container p-3 shadow-lg field-width mt-4 pb-5">
+        <div className="post-container p-3 shadow-sm field-width mt-4 pb-5">
             <form onSubmit={Submit}>
             {statusMessage && (
                 <div className={`alert alert-${status}`} role="alert">
