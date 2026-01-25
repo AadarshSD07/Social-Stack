@@ -452,7 +452,7 @@ height: calc(100% - 73px);
   .truncate-text {
     display: inline-block;
     white-space: nowrap;
-    overflow: hidden;
+    /* overflow: hidden; */
     text-overflow: ellipsis;
 
     max-width: 6ch; 
