@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="footer-top">
         {/* Left */}
         <div className="footer-brand">
-          <h4>Social Stack</h4>
-          <p>A full-stack social platform demo</p>
+          <h4>Confessions</h4>
+          <p>A full-stack social media platform demo</p>
         </div>
 
         {/* Center */}
@@ -24,7 +24,7 @@ export default function Footer() {
         {/* Right */}
         <div className="footer-links">
           <a
-            href="https://github.com/AadarshSD07/Social-Stack"
+            href="https://github.com/AadarshSD07/Confessions"
             target="_blank"
             rel="noopener noreferrer"
           >

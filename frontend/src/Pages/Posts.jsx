@@ -90,6 +90,7 @@ const Posts = (props) => {
       {statusMessage && (
         <div className={`alert alert-${status} mt-3`} role="alert">
             {statusMessage}
+            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       )}
       { socialPosts.length < 1 ? (

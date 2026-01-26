@@ -16,30 +16,20 @@ const Register = () => {
         e.preventDefault();
         setError("");
         setLoading(true);
-        let username = username.replace(" ","_");
-        setUsername(username);
-
-        // Create FormData object
-        const formData = new FormData();
-
-        // Add text fields
-        formData.append('username', username);
-        formData.append('email', email);
-        formData.append('first_name', firstname);
-        formData.append('last_name', lastname);
-        formData.append('password', password);
-        formData.append('gender', gender);
+        let usernameWithoutSpaces = username.replace(" ","_").toLowerCase();
+        setUsername(usernameWithoutSpaces);
 
         try {
             // Step 1: Register the user
             const registrationResponse = await axios.post(
                 `${backendDomain}/accounts/register/`,
                 {
-                    username: username,
+                    username: usernameWithoutSpaces,
                     email: email,
                     first_name: firstname,
                     last_name: lastname,
-                    password: password
+                    password: password,
+                    gender: gender
                 },
                 {
                     headers: {
@@ -80,6 +70,7 @@ const Register = () => {
                 {error && (
                 <div className="alert alert-danger" role="alert">
                     {error}
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 )}
                 

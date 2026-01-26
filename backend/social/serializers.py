@@ -33,7 +33,7 @@ class CommentSerializer(serializers.ModelSerializer):
         """
         profile_image = obj.user.profile_image
         if profile_image:
-            return f'/media/{profile_image}'
+            return profile_image
         return ""
 
 

@@ -1,16 +1,16 @@
-# 📱Social Media Project
+# 📱 Confessions – Social Media Project
 
-A full-stack social media basic application built with Django backend and React frontend, featuring JWT authentication and Role-Based Access Control (RBAC). Now fully containerized with **Docker** for easy setup and deployment.
+A full-stack social media application built with Django backend and React frontend, featuring JWT authentication, Role-Based Access Control (RBAC), and now enhanced with **Cloudinary image storage** and **light/dark theme support**. Fully containerized with **Docker** for easy setup and deployment.
 
-## ✨Features
+## ✨ Features
 
-### 🔐Authentication & Authorization
+### 🔐 Authentication & Authorization
 - JWT (JSON Web Token) based authentication
 - Role-Based Access Control (RBAC) system with two roles:
   - **User**: Standard user with basic permissions
   - **Admin**: Elevated permissions for content moderation
 
-### 👤User Capabilities
+### 👤 User Capabilities
 - Register and log in
 - Create posts with descriptions and images
 - View and manage own posts on the dashboard
@@ -18,23 +18,37 @@ A full-stack social media basic application built with Django backend and React 
 - View all posts from all users
 - Like and comment on posts
 - Search and filter posts
-- Navigate to other users’ profile pages (merged with dashboard) via search
+- Navigate to other users’ profile pages via search
 - Delete own posts
 
-### 🛡️Admin Capabilities
+### 🛡️ Admin Capabilities
 - All user capabilities
 - Delete posts of any user (content moderation)
 - Manage inappropriate or unfit content
 
-### 📂Application Sections
-1. **Dashboard/User Profile** – Displays the logged-in user's posts and serves as the profile page for other users.
+### 🎨 UI Enhancements
+- **Light/Dark Theme Toggle** for improved accessibility and user experience
+
+### ☁️ Cloudinary Integration
+- Profile images and post images are stored in **Cloudinary** instead of local media files
+- Required configuration:
+  ```bash
+  CLOUDINARY_URL="Cloudinary URL"
+  CLOUD_NAME="Cloud name"
+  API_KEY="API Key"
+  API_SECRET="API Secret"
+  ```  
+- Learn more about Cloudinary [here](https://cloudinary.com/)
+
+### 📂 Application Sections
+1. **Dashboard/User Profile** – Displays the logged-in user's posts and serves as the profile page for other users
 2. **View Posts** – Shows all posts from all users
 3. **Create Post** – Form to create new posts with description and image fields
 4. **Profile** – Form to update user details
 5. **Change Password** – Form to change password using the previous password
 6. **Search** – Searches users and posts by keyword and allows navigation to user dashboards
 
-## 🛠️Tech Stack
+## 🛠️ Tech Stack
 
 ### Backend
 - Django
@@ -49,8 +63,10 @@ A full-stack social media basic application built with Django backend and React 
 ### Deployment
 - Docker
 - Docker Compose
+- Hosted on **Render (backend)** and **Vercel (frontend)**
+- Live demo: [https://theconfessions.vercel.app/](https://theconfessions.vercel.app/)
 
-## 📁Project Structure
+## 📁 Project Structure
 
 ```
 project-root/
@@ -60,7 +76,7 @@ project-root/
 └── package.json      # Root package.json for concurrent server execution
 ```
 
-## ⚙️Installation & Setup
+## ⚙️ Installation & Setup
 
 ### Prerequisites
 - Docker
@@ -106,7 +122,7 @@ If you prefer manual setup:
   npm start
   ```
 
-## 📡API Endpoints
+## � API Endpoints
 
 ### Authentication
 - `POST /auth/login/` – User login
@@ -126,7 +142,7 @@ If you prefer manual setup:
 - `POST /social/comment/:id/` – Comment on a post
 - `GET /social/search/<search_text>/` – Search users and posts by keyword, navigate to user dashboards
 
-## 👥User Roles & Permissions
+## 👥 User Roles & Permissions
 
 | Action                          | User | Admin |
 |---------------------------------|------|-------|
@@ -138,20 +154,20 @@ If you prefer manual setup:
 | Delete Any Post                 | ✗    | ✓     |
 | Navigate to Other User Dashboards | ✓  | ✓     |
 
-## 🔮Future Enhancements
+## �🔮 Future Enhancements
 - Dedicated user profile pages (expanded beyond dashboard)
 - Real-time notifications
 - Email verification
 
-## 🤝Contributing
+## 🤝 Contributing
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📜License
+## 📜 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📬Contact
+## 📬 Contact
 For questions or support, please open an issue in the repository.

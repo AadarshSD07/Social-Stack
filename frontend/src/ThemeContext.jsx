@@ -12,7 +12,7 @@ export const ThemeProvider = ({ children }) => {
       document.documentElement.setAttribute("data-theme", saved);
     } else {
       const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
+        "(prefers-color-scheme: light)"
       ).matches;
       if (prefersDark) {
         setTheme("dark");
@@ -20,13 +20,6 @@ export const ThemeProvider = ({ children }) => {
       }
     }
   }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
 
   const applyThemeWithTransition = async (nextTheme, thumbEl) => {
     const reducedMotion = window.matchMedia(

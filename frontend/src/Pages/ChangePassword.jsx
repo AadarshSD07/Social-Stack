@@ -53,6 +53,7 @@ export default function ChangePassword() {
             {statusMessage && (
                 <div className={`alert alert-${status}`} role="alert">
                     {statusMessage}
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             )}
             <div className="mb-3">
