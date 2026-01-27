@@ -31,6 +31,7 @@ class Config:
     """Project Variables"""
     posts_per_page = os.getenv('POSTS_PER_PAGE', '50')
     default_image = f"{os.getenv('VITE_BACKEND_DOMAIN')}/static/user_profile_images/default-avatar.png"
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
     """Postgres Configuration"""
     postgres_db = os.getenv("POSTGRES_DB")

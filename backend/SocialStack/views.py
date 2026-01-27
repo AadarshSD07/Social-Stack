@@ -1,11 +1,16 @@
 # views.py
+from accounts.models import User
 from configuration import Config
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.middleware.csrf import get_token
+from google.oauth2 import id_token
+from google.auth.transport import requests
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class ReactAppView(TemplateView):
     """
@@ -98,3 +103,43 @@ class HeaderDetails(APIView):
             information = {}
             
         return Response(information, status=Config.success)
+
+
+class GoogleAuthView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        token = request.data.get("token")
+
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                settings.GOOGLE_CLIENT_ID
+            )
+
+            email = idinfo["email"]
+            username = idinfo["email"].split("@")[0]
+            if len(idinfo.get("name", "").split(" ")) > 1:
+                first_name = idinfo.get("given_name", "")
+                last_name = idinfo.get("family_name", "")
+            picture = idinfo.get("picture", "")
+
+            user, created = User.objects.get_or_create(email=email)
+            if created:
+                user.username = username
+                user.first_name = first_name
+                user.last_name = last_name
+                user.profile_image = picture
+                user.set_unusable_password()
+                user.save()
+
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh)
+            })
+
+        except ValueError:
+            return Response({"error": "Invalid Google token"}, status=400)

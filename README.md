@@ -1,7 +1,8 @@
 # 📱 Confessions — Full-Stack Social Media Platform
 
-Confessions is a full-stack social media application built with a Django REST backend and React frontend, featuring JWT-based authentication, Role-Based Access Control (RBAC), Cloudinary image storage, and light/dark theme support.
-The entire system is containerized using Docker and deployed using modern cloud platforms.
+**Confessions** is a full-stack basic social media application built with a **Django REST backend** and **React frontend**, featuring **JWT authentication**, **Google OAuth2 login**, **Role-Based Access Control (RBAC)**, **Cloudinary image storage**, and **light/dark theme support**.
+
+The application is fully containerized using **Docker** and deployed using **Render (backend & database)** and **Vercel (frontend)**.
 
 ## 🚀 Live Demo
 Frontend (Vercel): [https://theconfessions.vercel.app/](https://theconfessions.vercel.app/)
@@ -26,13 +27,67 @@ Cloudinary (Media Storage)
 
 ### 🔐 Authentication & Authorization
 - JWT (JSON Web Token) based authentication
+- **Google OAuth2 login support**
 - Secure access & refresh token flow
-- Role-Based Access Control (RBAC) system with two roles:
+- Role-Based Access Control (RBAC):
   - **User**: Standard user with basic permissions
   - **Admin**: Elevated permissions for content moderation
 
+## 🔑 Google OAuth2 Authentication
+Users can authenticate using their **Google account** directly from the login page.
+
+### 🧭 Authentication Flow
+```
+Google ID Token
+↓
+Django Backend
+↓
+JWT Access + Refresh Tokens
+↓
+Stored in localStorage
+↓
+User Redirected to Dashboard
+```
+
+### 🛠️ Google OAuth2 Setup (Required)
+
+1. Go to **Google Cloud Console**
+   - https://console.cloud.google.com/
+
+2. Create a **New Project**
+
+3. Navigate to:
+APIs & Services → OAuth Consent Screen
+
+- Choose **External**
+- Fill basic app information
+- Add scopes: `email`, `profile`
+
+4. Create OAuth Credentials:
+APIs & Services → Credentials → Create Credentials → OAuth Client ID
+
+- Application type: **Web Application**
+- Authorized origins:
+  ```
+  http://localhost:5173
+  https://theconfessions.vercel.app
+  ```
+- Authorized redirect URIs (if applicable)
+
+5. Copy the **Client ID**
+
+### 🔐 Required Environment Variable
+
+```bash
+GOOGLE_CLIENT_ID="your_google_client_id"
+```
+
+This Client ID is:
+- Used in the React frontend for Google login
+- Verified by Django backend before issuing JWT tokens
+
 ### 👤 User Capabilities
-- User registration and login
+- Sign up and log in (email/password or Google OAuth)
 - Create posts with images and descriptions
 - View all posts from all users
 - Like and comment on posts
@@ -94,11 +149,13 @@ Cloudinary (Media Storage)
 - Django REST Framework
 - PostgreSQL
 - JWT Authentication
+- Google OAuth2
 
 ### Frontend
 - React
 - React Router
 - Axios / Fetch
+- Google Identity Services
 
 ### Deployment & DevOps
 - Docker & Docker Compose
@@ -166,6 +223,7 @@ If you prefer manual setup:
 ### Authentication
 - `POST /auth/login/` – User login
 - `POST /auth/refresh/` – Refresh JWT token
+- `POST /auth/google/` – Authenticate and create new account using Google oauth2
 
 ### Accounts
 - `POST /accounts/register/` – Register a new user

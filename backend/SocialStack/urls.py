@@ -21,7 +21,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from SocialStack.views import HeaderDetails
+from SocialStack.views import HeaderDetails, GoogleAuthView
 
 def show_urls(request):
     """
@@ -56,6 +56,7 @@ urlpatterns = [
     path("auth/login/", TokenObtainPairView.as_view()),
     path("auth/refresh/", TokenRefreshView.as_view()),
     path('header/', HeaderDetails.as_view(), name='header_details'),
+    path("auth/google/", GoogleAuthView.as_view(), name='google_oauth2'),
     path("accounts/", include("accounts.urls")),
     path("social/", include("social.urls")),
     path('', TemplateView.as_view(template_name='index.html')),

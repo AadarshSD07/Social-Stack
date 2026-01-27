@@ -52,7 +52,6 @@ const SocialPost = (props) => {
         headers: config["headers"],
         body: JSON.stringify({ liked: !liked })
       });
-      const data = await response.json();
     } catch (error) {
       console.error('Error liking post:', error);
     }
@@ -169,7 +168,7 @@ const SocialPost = (props) => {
             ) : (
               comments.map((comment) => (
                 <div key={comment.id} className="comment-item">
-                  <img src={`${comment.user_image ? comment.user_image : defaultImage }`} alt={comment.user} className="comment-avatar"/>
+                  <img src={`${comment.user_image ? comment.user_image : defaultImage(userInformation["gender"]) }`} alt={comment.user} className="comment-avatar"/>
                   <div className="comment-content">
                     <div className="comment-header">
                       <span className="comment-user">{comment.user}</span>

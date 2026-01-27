@@ -29,6 +29,7 @@
   --bg-btn-secondary-hover: #5c636a;
   --bg-btn-danger: #dc3545;
   --bg-btn-danger-hover: #bb2d3b;
+  --bg-google-btn: #e9ebf1;
 }
 
 [data-theme="dark"] {
@@ -62,6 +63,7 @@
   --bg-btn-secondary-hover: #5c636a;
   --bg-btn-danger: #dc3545;
   --bg-btn-danger-hover: #bb2d3b;
+  --bg-google-btn: #5F6D86;
 }
 
 body {
@@ -246,7 +248,7 @@ body {
 
 .comment-time {
   font-size: 12px;
-  color: #65676b;
+  color: var(--text-color);
 }
 
 .comment-text {
@@ -281,7 +283,7 @@ body {
 }
 
 .comment-submit {
-  background: #1877f2;
+  background: var(--btn-color);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -292,8 +294,8 @@ body {
   transition: background 0.2s ease;
 }
 
-.comment-submit:hover {
-  background: #166fe5;
+.comment-submit:hover, .comment-submit:focus, .comment-submit:active {
+  background: var(--btn-hover);
 }
 
 .comment-submit:active {

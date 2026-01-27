@@ -166,3 +166,6 @@ TIME_ZONE = 'Asia/Kolkata'  # IST (UTC+5:30)
 USE_TZ = True               # Enable timezone support
 
 # SQLite stores UTC internally, Django converts to IST automatically
+
+# Third Party Authentication using Google OAuth2
+GOOGLE_CLIENT_ID = Config.GOOGLE_CLIENT_ID

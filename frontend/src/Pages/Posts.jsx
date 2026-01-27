@@ -24,7 +24,6 @@ const Posts = (props) => {
   }
 
   const deletePost = async (postId) => {
-    debugger
     props.setError(null);
 
     try {
